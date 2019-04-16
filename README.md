@@ -1,6 +1,11 @@
 
 ![logo](https://raw.githubusercontent.com/eyeieye-demo/melody3-demo/master/src/main/resources/static/favicon.ico)
-# Melody-DEMO
+# Melody3-DEMO
+### 申明
+-Melody3和Facewall的关系为一脉相承，均由该团队编写，facewall为中化信息的版本，版权归中化信息
+-自2019年开始，本团队不再维护facewall，完全交由中化信息维护
+-melody3依然由本团队维护
+
 ### demo版本更新
 
 - 更新了Melody版本至4.0.0
