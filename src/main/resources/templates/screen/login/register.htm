@@ -1,0 +1,73 @@
+<style type="text/css">
+    label.error {
+        color: red;
+        padding: 3px 10px;
+    }
+
+    span.required {
+        color: red;
+    }
+</style>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>测试</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css"/>
+</head>
+<body id="dd">
+<div name="index" th:fragment="screen_content">
+    <br/>
+    <h2>注册演示页面</h2><br/>
+    <form id="registerForm" th:action="${#url.get('appServer','/login/register.htm')}" method="post">
+        <table>
+            <tr>
+                <th><span class="required">*</span>用户名：</th>
+                <td>
+                    <input type="text" id="username" name="username"/>
+                    <!--<p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username Error</p>-->
+                </td>
+            </tr>
+            <tr>
+                <th><span class="required">*</span>口令：</th>
+                <td>
+                    <input type="password" id="password" name="password" value=""/>
+                    <!--<p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password Error</p>-->
+                </td>
+            </tr>
+            <tr>
+                <span class="required">*</span>
+                <th>年龄：</th>
+                <td>
+                    <input type="text" id="age" name="age" value=""/>
+                    <!--<p th:if="${#fields.hasErrors('age')}" th:errors="*{age}">age Error</p>-->
+                </td>
+            </tr>
+            <tr>
+                <th>性别：</th>
+                <td>
+                    <select id="gender" name="gender">
+                        <option value="">请选择</option>
+                        <option value="MALE">男</option>
+                        <option value="FEMALE">女</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>地址：</th>
+                <td>
+                    <input type="text" id="address" name="address"/>
+                    <!--<p th:if="${#fields.hasErrors('address')}" th:errors="*{address}">address Error</p>-->
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" value="注册"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>

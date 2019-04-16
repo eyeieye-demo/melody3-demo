@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <title>MelodyDemo</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body>
+<div th:fragment="screen_content">
+<p>UUIDGenerator是一个生成UUID的工具类，他只有一个公开方法为generate()，该方法可以生成一个32位的UUID，<br/>
+如：<span th:text="${UUID}">UUID</span></p>
+</div>
+</body>
+</html>

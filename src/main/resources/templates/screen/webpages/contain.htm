@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>MelodyDemo</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body>
+<div th:fragment="screen_content">
+<p>contain是用来在页面中动态include一个url的方法，类似于jsp中的jsp:include。</p>
+<p>**jsp:include和contain是有区别的：include是将页面拼接好后之后在进行渲染，而contain是先渲染子页面再拼接，所以contain能够支持异步渲染。</p>
+
+
+
+<h3>基本用法</h3>
+
+<div style="margin-left: 5%;">
+    <div es:contain="lazy:${#url.get('appServer','webpages/widget/base.htm')}" >
+
+    </div>
+</div>
+
+
+
+<h3>向页面传递参数</h3>
+
+<div style="margin-left: 5%;">
+<div es:contain="lazy:${#url.get('appServer','webpages/widget/set_param.htm')}" >
+
+</div>
+</div>
+
+
+<h3>多个contain页面的响应问题--同步contain</h3>
+
+<div style="margin-left: 5%;">
+    <div es:contain="lazy:${#url.get('appServer','webpages/widget/block.htm')}" >
+
+    </div>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>测试</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body id="dd">
+<div name="index" th:fragment="screen_content">
+<form id="form">
+    <p><label>电影名：</label>
+        <input id="movieName" type="text" value=""/>
+        <label>飞船id：</label>
+        <input id="shipId" type="text" value=""/>
+        <input type="button" id="restful" value="提交"/><br/>
+    </p>
+</form>
+得到的对象如下:<br/>
+电影名字:[[${movieName}]]　<br/>
+飞船编号:[[${shipId}]]<br/>
+<br/>
+
+<script th:inline="javascript" type="text/javascript">
+    $(document).ready(function () {
+        $("#restful").click(function () {
+            var path = '/spring/annotation/movie/' + $('#movieName').eq(0).val() + '/' + $('#shipId').eq(0).val() + '.htm';
+            var url = [[${#url.get('appServer','').toString()}]] + path;
+            var form = document.getElementById('form');
+            form.method = 'post';
+            form.action = url;
+            form.submit();
+        });
+    })
+</script>
+</div>
+</body>
+</html>

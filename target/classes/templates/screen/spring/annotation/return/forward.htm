@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>测试</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body id="dd">
+<div name="index" th:fragment="screen_content">
+我是返回String的方法，类型为forward，当前时间 [[${currentTime}]] <br/>
+原链接访问的是string_forward.htm，实际返回的资源为forward.vm文件。
+</div>
+</body>
+</html>

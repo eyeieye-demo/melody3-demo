@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout="index.htm">
+<head>
+</head>
+<body>
+<div >我不应该被渲染</div>
+<div name="content" th:fragment="screen_content">
+    这个页面的layout使用了index的布局,虽然这个页面的地址是coc/layout/custom.htm
+    <pre lang="xml">
+        < html xmlns:th="http://www.thymeleaf.org" es:layout="index" >
+
+    </pre>
+</div>
+<div >我不应该被渲染</div>
+</body>
+</html>

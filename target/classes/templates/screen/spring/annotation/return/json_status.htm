@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+	<title>测试</title>
+	<link rel="stylesheet" type="text/css" media="all"
+		  href="script/chat.css" />
+</head>
+<body id="dd">
+<th:block name="index" th:fragment="screen_content">
+{
+	"age":"[[${west.age}]]",
+	"name":"[[${west.name}]]",
+	"nick":"[[${west.nick}]]"
+}
+</th:block>
+</body>
+</html>

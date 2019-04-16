@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>测试</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body id="dd">
+<div name="index" th:fragment="screen_content">
+得到的对象如下:<br/>
+名字:[[${obj.name}]]<br/>
+称呼:[[${obj.nick}]]<br/>
+年龄:[[${obj.age}]]<br/>
+</div>
+</body>
+</html>

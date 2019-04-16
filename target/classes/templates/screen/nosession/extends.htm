@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>MelodyDemo</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body>
+<div th:fragment="screen_content">
+<ul class="demo-ul-paragraph">
+<p>有时服务器需要用到一些信息，但是这些信息数量较多不适合存储在cookie中，这时可以通过cookie的拓展进行实现。使用cookie的拓展的方法如下：</p>
+    <li>1、建立实体类</li>
+    <p>同cookie一样，存储的信息需要存储在对象中，所以需要建立相应实体类。</p>
+    <li>2、编写SessionStore实现类</li>
+    <p>① 实现SessionStore接口，该接口是对session的配置，有如下几个方法需要实现<br/>
+        public void put*String sessionId, String key, Object value)<br/>
+        该方法是写入session的方法<br/><br/>
+        public Object get(String sessionId, String key)<br/>
+        该方法是从session中读取内容的方法。<br/><br/>
+        public Set&lt;String&gt; keys()<br/>
+        该方法是获得Session从session中取出来存到本地缓存的标识。<br/><br/>
+        public void invalidate(String sessionId)<br/>
+        该方法在是<!-- TODO: 这个方法是做什的？ --><br/><br/>
+        public int getOrder()<br/>
+        该方法返回的是本配置的加载顺序。<br/><br/>
+        <span style="color: #62001b">**在该类中需要实现于本地缓存中读取对象的功能。</span>
+    </p>
+    <p>
+            ② 配置bean：
+            可以通过@Configuration方法配置bean，在注解了@Configuration的类中添加返回SessionStore实现类的对象的方法，并注解@Bean。
+        </p>
+    <li>3、使用Nosession</li>
+    <p>完成第三步后，在方法的参数中添加指定类型的参数便可以直接注入。</p>
+
+
+<!--
+    <p><a class="m-detail-link1" href="$appServer.get('/login/extended_user_login.htm')">示例</a></p>
+-->
+    <p><a class="m-detail-link1" th:href="${#url.get('appServer','/nosession/login.htm')}" target="_blank">示例</a></p>
+    <p>本示例需要使用到Redis作为本地缓存，所以需要进行相关配置：<a class="m-detail-link1" th:href="${#url.get('appServer','/nosession/redis_config.htm')}" target="_blank">Redis的配置</a></p>
+
+</ul>
+</div>
+</body>
+</html>

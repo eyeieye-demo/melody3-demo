@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>MelodyDemo-远程reload示例</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body>
+<div th:fragment="screen_content">
+    <br/>
+    <h2>远程Reload示例</h2>
+    <br/>
+    <p><button onclick="Melody.get('reloadable').refresh();">reload</button></p>
+    <div id="reloadable" es:contain="reload:${#url.get('imageServer','/webpages/demo/contained_page.htm')}"></div>
+
+</div>
+</body>
+</html>

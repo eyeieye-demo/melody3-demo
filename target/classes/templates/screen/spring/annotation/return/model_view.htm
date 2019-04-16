@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>测试</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body id="dd">
+<div name="index" th:fragment="screen_content">
+<p>我是返回ModelAndView的方法，当前时间 [[${currentTime}]]</p>
+<p>设置返回的页面资源的方法为</p>
+<pre>
+    <code class="m-xmp">
+        ModelAndView modelAndView = new ModelAndView("/spring/annotation/return/model_view");
+    </code>
+</pre>
+<p>设置参数的方法为</p>
+<pre>
+    <code class="m-xmp">
+        modelAndView.addObject("currentTime",new Date());
+    </code>
+</pre>
+</div>
+</body>
+</html>

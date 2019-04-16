@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>MelodyDemo</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body>
+<div th:fragment="screen_content">
+<h2 class="melody-d-title">目录结构说明和示例</h2>
+
+<div es:contain="lazy:${#url.get('appServer','/dir_url/directory.htm')}"></div>
+<br/>
+<div es:contain="lazy:${#url.get('appServer','/dir_url/url_broker.htm')}"></div>
+</div>
+</body>
+</html>

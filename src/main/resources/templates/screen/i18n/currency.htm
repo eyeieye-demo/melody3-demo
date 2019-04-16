@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>国际化</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css"/>
+</head>
+<body id="dd">
+<div name="index" th:fragment="screen_content">
+    <h2>国际化货币显示示例</h2>
+<br/>
+<br/>
+    <h3>商品1</h3>
+    <div style="margin-left: 5%;">
+        <p>货币种类：<span th:text="${amount1.type}"></span></p>
+        <p>价格：<span th:text="${amount1.type.symbol}"></span><span th:text="${amount1.money}"></span></p>
+    </div>
+
+    <h3>商品2</h3>
+    <div style="margin-left: 5%;">
+        <p>货币种类：<span th:text="${amount2.type}"></span></p>
+        <p>价格：<span th:text="${amount2.type.symbol}"></span><span th:text="${amount2.money}"></span></p>
+    </div>
+
+    <h3>商品3</h3>
+    <div style="margin-left: 5%;">
+        <p>货币种类：<span th:text="${amount3.type}"></span></p>
+        <p>价格：<span th:text="${amount3.type.symbol}"></span><span th:text="${amount3.money}"></span></p>
+    </div>
+
+</div>
+</body>
+</html>

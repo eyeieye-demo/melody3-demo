@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>MelodyDemo</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css"/>
+</head>
+<body>
+<div th:fragment="screen_content">
+    <p>本地服务器名为：[[${hostName}]]</p>
+    <p>本地服务器地址为：[[${hostAddress}]]</p>
+    <p>本地服务器配置的ipv4地址有：
+    <p th:each="address : ${ipv4Addresses}">
+    [[${address}]]
+    </p>
+    <p>本地服务器配置的ipv4地址中第一个地址是：[[${firstAddress}]]</p>
+</div>
+</body>
+</html>

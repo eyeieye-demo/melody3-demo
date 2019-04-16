@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>MelodyDemo</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css"/>
+</head>
+<body>
+<div th:fragment="screen_content">
+    <p>这是nosession及其拓展功能的测试页面，该功能需要用到redis，具体配置请参照<a class="m-detail-link1" th:href="${#url.get('appServer','/nosession/redis_config.htm')}">此页面</a> </p>
+    <form method="post" action="login.htm">
+        <input type="text" name="username" value="zhangsan"/>
+        <input type="password" name="password" value="zhangsanok"/>
+        <button>登录</button>
+        <a href="center.htm">不登录</a>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<th:block es:contain="${#url.get('appServer','/contain/htmlhead.htm').put('title','首页')}" ></th:block>
+<body>
+<div class="s-mod melody">
+    <th:block es:contain="${#url.get('appServer','/contain/header.htm')}" ></th:block>
+    <div class="melody-detail-wrap">
+        <th:block es:contain="screen_content"></th:block>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>MelodyDemo</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body>
+<ul th:fragment="screen_content">
+    <li>server:
+        <ul>
+            <li>port: 端口号，没有默认值，必要配置项</li>
+            <li>context-path: 执行路径，没有默认值，必要配置项</li>
+            <li>domain: application的域名，没有默认值，必要配置项</li>
+        </ul>
+    </li>
+
+    <li>Melody:
+        <ul>
+            <li>connection:
+                <ul>
+                    <li>maxTotal: 最大连接数，默认值200，非必要配置项</li>
+                    <li>maxPreRoute: 最大路由数，默认值50，非必要配置项</li>
+                    <li>socketTimeOut: socket超时时间，单位毫秒，默认值5000，非必要配置项</li>
+                    <li>connectionTimeOut: 连接超时时间，单位毫秒，默认值3000，非必要配置项</li>
+                    <li>connectionRequestTimeOut: request超时时间，单位毫秒，默认值3000，非必要配置项</li>
+                </ul>
+            </li>
+
+            <li>web:
+                <ul>
+                    <li>meta:
+                        <ul>
+                            <li>cookie:
+                                <ul>
+                                    <li>name: 存储的cookie名，默认为"_h_"，非必要配置项</li>
+                                    <li>maxCount: cookie存储对象的最大个数，默认为20，非必要配置项</li>
+                                    <li>maxLength: cookie存储对象的最大长度，单位为字节，默认为4095，非必要配置项</li>
+                                    <li>domain: cookie的域，默认为localhost，非必要配置项</li>
+                                    <li>path:  <!-- TODO 该项源码中没有 --></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>encoding: 字符编码，默认UTF-8，非必要配置项</li>
+                    <li>monitor:
+                        <ul>
+                            <li>threshold: 性能监控配置项，响应时间超过改配置值的访问会被记录，默认值100，非必要配置项 </li>
+                        </ul>
+                    </li>
+                    <li>locale:
+                        <ul>
+                            <li>cookieName: 存储国际化信息的cookie名，默认为"_l_"，非必要配置项</li>
+                            <li>support: 支持的语言，默认为zh_CN，非必要配置项</li>
+                            <li>default: 默认的语言，默认为zh_CN，非必要配置项</li>
+                            <li>country: 语言格式中是否带有国家，默认为false，非必要配置项</li>
+                            <li>language: 语言格式中是否带有语言类别，默认为true，非必要配置项</li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </li>
+
+        </ul>
+    </li>
+
+    <li>spring:
+        <ul>
+            <li>thymeleaf:
+                <ul>
+                    <li>cache: 是否开启页面缓存，默认为false，非必要配置项</li>
+                    <li>prefix: 页面文件根目录，默认为"classpath:/views/"，非必要配置项</li>
+                    <li>suffix: 页面文件后缀，默认为.htm，非必要配置项</li>
+                    <li>encoding: 页面字符编码，默认为UTF-8，非必要配置项</li>
+                    <li>content-type: 内容类型，默认为text/html，非必要配置项</li>
+                    <li>mode: 模板类型，默认为html5，非必要配置项 </li>
+                </ul>
+            </li>
+            <li>data:
+                <ul>
+                    <li>mongodb:
+                        <ul>
+                            <li>uri: mongodb的地址，没有默认值，如果使用mongodb，则为必要配置项</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>redis:
+                <ul>
+                    <li>database: <!-- 不知道做什么用的，redis的数据库个数? --> </li>
+                    <li>host: redis的主机地址，使用redis的必要配置项</li>
+                    <li>port: redis的主机地址的端口，使用redis的必要配置项</li>
+                    <li>password: redis的访问密码，使用redis的必要配置项</li>
+                    <li>pool:
+                        <ul>
+                            <li>max-active: 连接池的最大连接数，使用redis的必要配置项</li>
+                            <li>max-wait: 连接的最大等待时间，使用redis的必要配置项项</li>
+                            <li>max-idle: 连接池的最大空闲连接，使用redis的必要配置项</li>
+                            <li>min-idle: 连接池的最小空闲链接，使用redis的必要配置项</li>
+                        </ul>
+                    </li>
+                    <li>timeout: 连接超时时间，使用redis的必要配置项</li>
+                </ul>
+            </li>
+            <li>datasource:
+                <ul>
+                    <li>password: 数据库访问密码，必要配置项</li>
+                    <li>username: 数据库用户名，必要配置项</li>
+                    <li>url: 数据库连接地址，必要配置项</li>
+                    <li>driver-class-name: 数据库驱动名，必要配置项</li>
+                    <li>type: <!-- TODO 不确定这是什么作用 --></li>
+                    <li>druid:
+                        <ul>
+                            <li>initial-size: 初始化连接数</li>
+                            <li>max-active: 最大激活数</li>
+                            <li>max-wait: 最大等待时间</li>
+                            <li>use-unfair-lock: 是否启动非公平锁</li>
+                            <li>pool-prepared-statements: mysql 用 false | oracle 用 true</li>
+                            <li>filters: 启动的监听、日志、防注入的功能</li>
+                            <li>validation-query: 验证的sql语句</li>
+                            <li>validation-query-timeout: 验证超时时间</li>
+                            <li>test-on-borrow: 连接时是否开启验证</li>
+                            <li>test-on-return: 退还连接时是否开启验证</li>
+                            <li>test-while-idle: 对r空闲连接是否开启验证（建议配置为tre，不影响性能，并且保证安全性 ）</li>
+                            <li>time-between-eviction-runs-millis: Destroy线程会检测连接的间隔时间 || testWhileIdle的判断依据<!--TODO 什么意思？ --></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li>logging:
+        <ul>
+            <li>level:
+                <ul>
+                    <li>root: 日志等级</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>
+</body>
+</html>

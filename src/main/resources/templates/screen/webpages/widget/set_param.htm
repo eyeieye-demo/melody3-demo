@@ -1,0 +1,48 @@
+<ul class="demo-ul-paragraph"  th:fragment="screen_content">
+
+    <li>基本参数赋值</li>
+
+    <p>使用th:with属性可以为一个变量赋值，语法如下：</p>
+    <div class="melody-code-wrap">
+    <pre><code>th:with="my_name='neo'"</code></pre>
+    </div>
+    <p>该方法赋值的变量只在其所在标签内有效，效果如下所示：</p>
+
+
+    <div class="melody-code-wrap">
+    <pre><code><span  th:with="my_name='neo'" >在标签内：我的名字是[[${my_name}]]</span>
+<span>在标签外：我的名字是[[${my_name}]]</span></code></pre>
+    </div>
+
+
+
+    <li>put方法</li>
+    <p>contain请求的时候可以在get后使用put方法和addQueryData方法，为引入的页面添加参数。例如：</p><br/>
+
+    <div class="melody-code-wrap">
+<pre><code>&lt;th:block es:contain=&quot;${#url.get('appServer','/widget/show_name.htm').put('my_name','morpheus')}&quot; &gt;&lt;/th:block&gt;
+&lt;th:block es:contain=&quot;${#url.get('appServer','/widget/show_name.htm').addQueryData('my_name','morpheus')}&quot; &gt;&lt;/th:block&gt;</code></pre>
+    </div>
+
+    <p>效果：</p>
+    <div class="melody-code-wrap">
+<pre><code><th:block es:contain="${#url.get('appServer','webpages/widget/show_name.htm').put('my_name','morpheus')}" ></th:block>
+<th:block es:contain="${#url.get('appServer','webpages/widget/show_name.htm').addQueryData('my_name','morpheus')}" ></th:block></code></pre>
+    </div>
+
+
+    <!-- FIXME: 这一段目前无效
+    <p>但是，当put方法、addQueryData方法与setAttribute同时使用时，对于同名的参数，在被contain的页面中，put方法和addQueryData方法会覆盖setAttribute方法。例如：</p><br/>
+
+    <div th:with="my_name='Trinity'"  class="melody-code-wrap"><pre><code>
+        th:with="my_name='Trinity'"
+        &lt;th:block es:contain=&quot;${#url.get('appServer','/widget/show_name.htm')}&quot; &gt;&lt;/th:block&gt;
+        &lt;th:block es:contain=&quot;${#url.get('appServer','/widget/show_name.htm').put('my_name','Smith')}&quot; &gt;&lt;/th:block&gt;
+    </code></pre></div>
+
+    <p>效果：</p>
+    <p><th:block es:contain="${#url.get('appServer','webpages/widget/show_name.htm')}" ></th:block></p>
+    <p><th:block es:contain="${#url.get('appServer','webpages/widget/show_name.htm').put('my_name','Smith')}" ></th:block></p>
+
+    -->
+</ul>

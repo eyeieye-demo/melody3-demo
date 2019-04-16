@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>MelodyDemo</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body>
+    <div th:fragment="screen_content">
+    <h2>Melody 新特性介绍</h2>
+    <h3>1、Springboot</h3>
+    <p>Melody使用了Springboot作为基础框架，使用springboot有如下优势：</p>
+    <div style="margin: 5%">
+        <li>①内置servlet容器，可以以jar包方式独立运行，部署方便，符合微服务的需要；</li>
+        <li>②简化了应用配置和maven配置，更容易上手；</li>
+        <li>③提供了基于http、ssh、telnet的对程序进行监控的功能。</li>
+        <li></li>
+    </div>
+    <h3>2、Thymeleaf模版语言</h3>
+    <p>Melody中将页面模版语言换成了Thymeleaf，该模版语言可以支持原型设计，即页面开发人员不需要服务端提供数据也可以预览到页面的效果，增加了开发效率。</p>
+    <h3>3、新的配置文件</h3>
+    <p>配置文件使用了YAML格式的配置文件，即该demo中的application.yml文件，YAML格式使用的树形格式，比起properties文件更容易理解。</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>测试</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          th:href="script/chat.css" />
+</head>
+<body id="dd">
+<div name="index" th:fragment="screen_content">
+<h2 class="melody-d-title">其他功能说明和示例</h2>
+
+<details open>
+    <summary>
+         <h3>国际化</h3>
+    </summary>
+    <br/>
+    <div style="margin-left: 5%;">
+        <p>Melody支持国际化配置：<br/>
+            首先，要在配置文件application.yml中添加语言配置，即Melody.web.locale分支下的配置项，如下例所示：<br/>
+        </p>
+        <div class="melody-code-wrap">
+            <pre><code>
+Melody:
+    web:
+        locale:
+          cookieName: _l_
+          country: true
+          language: true
+          support: zh_CN,en_US
+          default: zh_CN
+            </code></pre>
+        </div>
+    <p>上述配置项的具体解释是：</p>
+    <p>cookieName是国际化相关cookie在浏览器上存储的名字；<br/>
+    country是国际化页面名是否包含国家；<br/>
+    language是国际化页面名是否包含语言；<br/>
+    support是应用支持的语言类型，未被配置的语言将不可用；<br/>
+    default是应用默认的语言，当未指定语言或指定语言对应页面不存在时，会按照默认语言处理。</p><br/>
+        <p>完成如上配置后，可以通过创建页面的国际化文件来使用国际化，做法是将页面的英文(或其他语言)的页面文件命名为“[页面名]_en_US.htm”，之后在英文的语言环境下访问该页面时，会自动访问到其英文页面。</p>
+    <p><span style="color: darkred;"><span style="font-weight: bolder">* 页面命名说明</span>，以英文环境的index.htm为例：<br/>
+        ①当conuntry、language均配置为true的时候，国家化页面应命名为index_en_US.htm;<br/>
+        ②当conuntry配置为true，language设置为false的时候，国家化页面应命名为index_US.htm;<br/>
+        ③当language配置为true，conuntry设置为false的时候，国家化页面应命名为index_en.htm;<br/>
+        ④当language、conuntry均设置为false的时候，国家化会关闭。<br/>
+    </span></p>
+    <p><span style="color: darkred;"><span style="font-weight: bolder">** 页面匹配规则说明</span>，以英文环境的index.htm为例：<br/>
+        ①当conuntry、language均设置为true的时候，首先会匹配index_en_US.htm，如果找不到则会匹配index.htm；<br/>
+        ②当conuntry配置为true，language设置为false的时候，首先会匹配index_US.htm，如果找不到则会匹配index.htm；<br/>
+        ③当language配置为true，conuntry设置为false的时候，首先会匹配index_en.htm，如果找不到则会匹配index.htm。<br/>
+    </span></p>
+    <p><span style="color: darkred;"><span style="font-weight: bolder">*** Layout匹配规则说明</span>，以英文环境的index.htm为例：<br/>
+       页面首先会匹配自身对应的layout，如index_en.htm，该页面首先会匹配Layout目录中同级文件夹下index_en.htm模板，如果没有则会匹配同级文件夹下的index.htm模板，如果也没有则会匹配同级文件夹下的default.htm模板，如果还没有则会匹配上级文件夹中的default.htm模板。
+    </span></p>
+    <li>示例：</li>
+    <p><a class="m-detail-link" th:href="${#url.get('appServer','/i18n/hasen.htm')}" target="_blank">国际化示例</a></p>
+    <p><a class="m-detail-link" th:href="${#url.get('appServer','/i18n/currency.htm')}" target="_blank">国际化货币示例</a></p>
+    <br/>
+    </div>
+</details>
+<details open>
+    <summary>
+        <h3>文件上传和下载</h3>
+    </summary>
+    <div style="margin-left: 5%;">
+        <li>文件上传可以使用表单提交的方式，使用type为file的input标签选择文件，并将form的enctype属性设置为multipart/form-data即可。<br/>
+            在服务器端使用MultipartFile接收参数。示例参照类com.eyeieye.melody.demo.controller.UploadController<br/>
+            文件下载使用的是HttpServletResponse，将文件返回到页面，需要注意的是，需要将HttpServletResponse的"Content-Disposition属性设置为attachment;Filename=[文件名]"
+        </li>
+        <li>示例：</li>
+        <p><a class="m-detail-link" th:href="${#url.get('appServer','/upload/simple.htm')}">文件上传</a></p>
+        <p><a class="m-detail-link" th:href="${#url.get('appServer','/download/excel.htm')}">文件下载</a></p>
+
+    </div>
+</details>
+<details open>
+    <summary>
+        <h3>页面统计工具</h3>
+    </summary>
+    <br/>
+     <div style="margin-left: 5%;">
+        <li>页面统计工具可以记录服务器启动以来的页面访问数据，其提供四个数据，分别是'总输出数据量(KB)'，'总执行次数'，'平均输出数据量(KB)'和'最大输出数据(KB)' <br/>
+            使用方法为，使用通过注入的方式获得ResponseOutputBufferFilter的对象，然后使用getReport()方法即可获得OutputReport对象。
+        </li>
+        <li>示例：</li>
+         <p><a class="m-detail-link" th:href="${#url.get('appServer','/report/output.htm')}">统计记录</a><br/></p>
+        </div>
+</details>
+
+<details open>
+    <summary>
+        <h3>性能监控</h3>
+    </summary>
+    <br/>
+     <div style="margin-left: 5%;">
+        <p>Melody提供了性能监控功能，可以在配置文件中添加配置项： </p>
+         <div class="melody-code-wrap"><pre><code>
+ Melody:
+     web:
+         monitor:
+             threshold: 100
+         </code></pre></div>
+         <p>该配置项为性能监控的记录阈值，单位为毫秒，默认值为100，当一个请求的反应时间超过了该设置，则会将这条请求输出到控制台并记录下来。</p>
+     </div>
+
+</details>
+
+
+<details open>
+    <summary>
+        <h3>HttpClient</h3>
+    </summary>
+    <br/>
+    <div style="margin-left: 5%;">
+        <th:block es:contain="lazy:${#url.get('appServer','/http_client/introduce.htm')}" ></th:block>
+        <br/>
+    </div>
+</details>
+
+<details open>
+    <summary>
+        <h3>加解密</h3>
+    </summary>
+    <br/>
+    <div style="margin-left: 5%;">
+        <th:block es:contain="lazy:${#url.get('appServer','/crypto/introduce.htm')}" ></th:block>
+        <br/>
+    </div>
+</details>
+
+<details open>
+    <summary>
+        <h3>数据库配置</h3>
+    </summary>
+    <br/>
+    <div style="margin-left: 5%;">
+        <th:block es:contain="lazy:${#url.get('appServer','/db/introduce.htm')}" ></th:block>
+        <br/>
+    </div>
+</details>
+</div>
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>页面统计</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          th:href="script/chat.css"/>
+</head>
+<body id="dd">
+<div name="index" th:fragment="screen_content">
+    <p>总输出:[[${report.outputTotal}]]KB </p>
+    <p>执行次数:[[${report.outputCount}]] </p>
+    <p>平均值:[[${report.averageOutput}]]KB </p>
+    <p>最大值:[[${report.maxOutput}]]KB </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>测试</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css"/>
+</head>
+<body id="dd">
+<div name="index" th:fragment="screen_content">
+    <h2 class="melody-d-title">传参、返回值说明和示例</h2>
+    <p>这一部分介绍页面与服务器交互的方式，包括页面向服务器传递参数和服务器返回数据的方式。</p>
+    <p>本页面对应的java文件为com.eyeieye.melody.demo.controller.AnnotationController.java</p>
+    <br/>
+    <details open>
+        <summary>
+            <h3>传入参数</h3>
+        </summary>
+        <div style="margin-left: 5%;">
+            <th:block es:contain="lazy:${#url.get('appServer','introduce/springboot/param.htm')}"></th:block>
+        </div>
+    </details>
+    <details open>
+        <summary>
+            <h3>返回参数</h3>
+        </summary>
+        <div style="margin-left: 5%;">
+            <th:block es:contain="lazy:${#url.get('appServer','introduce/springboot/return.htm')}"></th:block>
+        </div>
+    </details>
+    <br/>
+    <ditails open>
+        <summary><h3>综合示例</h3></summary>
+        <div style="margin-left: 5%;">
+            <p><a class="m-detail-link" th:href="${#url.get('appServer','/login/register.htm')}">用户注册</a></p>
+            <p><a class="m-detail-link" th:href="${#url.get('appServer','/login/login.htm')}">用户登录</a></p>
+        </div>
+    </ditails>
+</div>
+</body>
+</html>

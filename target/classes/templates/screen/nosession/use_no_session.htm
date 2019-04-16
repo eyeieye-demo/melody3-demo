@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>MelodyDemo</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body>
+<div th:fragment="screen_content">
+<ul class="demo-ul-paragraph">
+    <li>1、设置Melody.meta.web.cookie</li>
+    <p>使用NoSession首先需要在配置文件中添加相关配置，在 Melody.meta.web.cookie 这个分支下有name，maxCount，maxLength，domain，path 五个配置项，name为cookie在浏览器上存储的名字，maxCount是一个cookie中可以存储的对象个数，maxLength是一个对象的最大大小，domain是cookie的作用域，path是cookie的作用路径。</p>
+    <div class="melody-code-wrap"><pre><code>
+Melody:
+  web:
+    meta:
+      cookie:
+        name: _h_
+        maxCount: 20
+        maxLength: 4095
+        domain: localhost
+        path: /
+    </code></pre></div>
+    <li>2、编写domain类</li>
+    <p>cookie中存储信息使用了java序列化，所以需要编写一个用于存放信息的实体类。<br/>
+    该类需要实现Serializable接口，保证实体类可以序列化。<br/>
+        示例参见com.eyeieye.melody.demo.domain.User类。</p>
+
+    <li>3、编写SessionCookieStoreConfig类</li>
+        <p>在该类中配置cookie属性，需要配置的内容如下所示<br/>
+            Set&lt;String&gt; attributeNames ：用于识别存放于cookie中的对象的标识；<br/>
+            Encode encode ：对象序列化的加密方式；<br/>
+            String domain ：cookie所在的域名；<br/>
+            int maxAge ：cookie的生命周期时长；<br/>
+            String path ：cookie所在的域名下的路径；<br/>
+            String cookieName ：cookie在域名下存储的名字；<br/>
+            int maxLength ：cookie中存储的单个对象的最大大小；<br/>
+            int maxCount ：cookie中存储对象的最大个数。<br/><br/>
+            <span style="color: #62001b">**本类中需要配置的属性可以从配置文件中读取，使用方法是利用注解@ConfigurationProperties(prefix="&lt;节点路径&gt;")，其中"&lt;节点路径&gt;"是配置这些属性的节点项的上级节点，如本例中所使用的是"Melody.web.meta.cookie"。</span>
+            <span style="color: #62001b">***本类需要添加@Component注解声明为bean。</span>
+
+        </p>
+    <li>4、使用Nosession</li>
+    <p>完成第三步后，在方法的参数中添加指定类型的参数便可以直接注入。</p>
+
+</ul>
+</div>
+</body>
+</html>

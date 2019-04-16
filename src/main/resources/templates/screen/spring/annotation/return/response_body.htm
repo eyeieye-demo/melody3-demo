@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>测试</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body id="dd">
+<div name="index" th:fragment="screen_content">
+    <br/>
+<input type="button" id="json_return" value="点击请求一个json串"/>
+<script type="text/javascript" th:inline="javascript">
+    $(document).ready(function () {
+        $("#json_return").click(function () {
+            jQuery.getJSON([[${#url.get('appServer','/spring/annotation/return/json.json').toString()}]],
+                    function (data) {
+                        alert('返回的json串为：'+ JSON.stringify(data));
+                        alert('name:' + data.name + ' \nnick:' + data.nick + ' \nage:' + data.age);
+                    });
+        });
+    });
+</script>
+</div>
+</body>
+</html>

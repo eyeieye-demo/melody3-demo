@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>MelodyDemo</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css"/>
+</head>
+<body>
+<div th:fragment="screen_content">
+    <form th:acion="${#url.get('appServer','/utils/demo/moneyutil.htm')}" method="get">
+        <p>请输入金额：<input type="text" placeholder="请输入纯数字" name="amount"
+                        th:value="${amount}?${amount}:0"/></p>
+        <p>请选择币种：<select name="currencyCodeIndex" th:if="${currencyCodes}">
+            <option th:each="currencyCode:${currencyCodes}" th:value="${currencyCodeStat.index}"
+                    th:selected="${velocityCount eq currencyCodeIndex}?'selected':''">[[${currencyCode}]]
+            </option>
+        </select>
+        </p>
+        <p><input type="submit" value="提交"/></p>
+    </form>
+    <p>比当前币种100元：
+<span th:text="${compare == -1}?'少':(${compare == 0}?'不多不少':(${compare == 1}?'多':''))"
+
+</p>
+
+    <p>加上当前币种10元：[[${add}]]</p>
+
+    <p>金额乘以2：[[${multiply}]]</p>
+    <p>金额平分为5份：
+        <span th:each="amount:${allocate1}" > [[${amount}]]</span>
+
+    </p>
+
+    <p>金额按照1:2:3分为三份：
+        <span th:each="amount:${allocate2}" > [[${amount}]]</span>
+</p>
+</div>
+</body>
+</html>

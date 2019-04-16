@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>测试</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body id="dd">
+<div name="index" th:fragment="screen_content">
+<p>示例对应的方法为AnnotationController.annotationBase</p>
+<p>示例通过addQueryData方法在链接后添加参数，同理同样适用于表单提交。</p>
+<p>request对象中取到的ip值:[[${ip}]]</p>
+<p>入参中name的值:[[${name}]]</p>
+<p>入参中size的值:[[${size}]]</p>
+</div>
+</body>
+</html>

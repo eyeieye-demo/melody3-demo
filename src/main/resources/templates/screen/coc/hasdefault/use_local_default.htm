@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+</head>
+<body>
+<div >我不应该被渲染</div>
+<div name="content" th:fragment="screen_content">
+    这个页面用到了当前的default,并没有显式声明
+    <pre>
+        < html xmlns:th="http://www.thymeleaf.org" es:layout >
+
+    </pre>
+</div>
+<div >我不应该被渲染</div>
+</body>
+</html>

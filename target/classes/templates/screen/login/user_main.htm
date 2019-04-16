@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>测试</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css"/>
+</head>
+<body id="dd">
+<div name="index" th:fragment="screen_content">
+    <th:block th:if="${agent != null}">
+        <p>这是存储在cookie中的信息：</p>
+        <p>
+            当前登录用户名字:[[${agent.name}]]<br/>
+            当前登录用户年龄:[[${agent.age}]]<br/>
+            当前登录用户性别:[[${agent.gender}]]<br/>
+            当前登录用户地址:[[${agent.address}]]<br/>
+        </p>
+        <p>*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*</p>
+        <p>以下是存储在缓存中的拓展内容：</p>
+        <div style="margin-left: 10%">
+            <p>[[${userext}]]</p>
+        </div>
+        <p>
+            <a class="m-detail-link1" th:href="${#url.get('appServer','/login/logout.htm')}">退出</a>
+        </p>
+    </th:block>
+    <th:block th:if="${agent == null}">
+        当前用户未登录<a class="m-detail-link" th:href="${#url.get('appServer','/login/login.htm')}">登录</a>
+    </th:block>
+</div>
+</body>
+</html>

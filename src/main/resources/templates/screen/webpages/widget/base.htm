@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <title>MelodyDemo</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body>
+<div th:fragment="screen_content">
+<p>①<u>本地contain</u> : es:contain="${#url.get([path])}" 是contain的基本用法，可以include本服务器中path对应的url。</p>
+<p>②<u>远程contain</u> : es:contain="${#url.get([serverHost],[path])}" 该方法会将path拼接到serverHost之后，并将得到的新链接include到页面中。</p>
+    <h4>注意</h4>
+    <ul>
+        <li>使用contain时需要避免递归引用，如在b页面中使用了es:contain="${#url.get('appServer','a.htm')}"，又在a页面中使用了es:contain="${#url.get('appServer','b.htm')}"。</li>
+        <li>请确保页面存在一个th:fragment="screen_content"的节点,contain会引入这个节点的内容</li>
+        <li>由于thymeleaf的特性,需要有一个Controller来Handler需要引入的路径,如果预期的contain没有生效,请检查此问题.
+
+        </li>
+    </ul>
+</div>
+</body>
+</html>

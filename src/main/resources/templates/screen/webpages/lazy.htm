@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>MelodyDemo</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body>
+<div th:fragment="screen_content">
+
+        <h3>LazyLoad</h3>
+        <h5></h5>
+        <div style="">
+            <p>和上面的reload一样,contain还会附带一个lazyload 的功能,区别是contain的url前缀为lazy</p>
+            <div class="melody-code-wrap"><pre><code>
+        &lt;div  es:contain=&quot;lazy:${#url.get('appServer','webpages/widget/reload.htm')}&quot;&gt;
+
+        &lt;/div&gt;
+    </code></pre></div>
+            <p>lazyload的页面,在页面打开时并不会加载,但当滚动条滚动到它时,它才会去获取内容.你现在看到的这个页面就是使用它实现的,请刷新页面,留意滚动条的变化</p>
+        </div>
+
+        <br/>
+        <br/>
+
+    </div>
+</body>
+</html>

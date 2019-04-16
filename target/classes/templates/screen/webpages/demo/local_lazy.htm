@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>MelodyDemo-本地lazyload示例</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css"/>
+</head>
+<body>
+<div th:fragment="screen_content">
+    <br/>
+    <h2>本地Lazyload示例</h2>
+    <br/>
+    当一个页面很长的时候，基于性能考虑，需要页面拆分为多个部分，等待页面滚动到对应的位置再进行load,这样可以避免一次加载过多内容而导致页面过大崩溃，也可以节约服务器资源（有时用户可能仅仅是路过，并不会看完整篇文档）。
+    请注意<strong>滚动条</strong>的变化------------------------>
+
+    <th:block th:each="item : ${#numbers.sequence(1,10)}">
+    <p>第<th:block th:text="${item}"></th:block>个contain：</p>
+    <p>请向下翻页</p>
+    <div es:contain="lazy:${#url.get('appServer','/webpages/demo/contained_page.htm')}"></div>
+    </th:block>
+</div>
+</body>
+</html>

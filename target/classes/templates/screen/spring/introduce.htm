@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>测试</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body id="dd">
+<div name="index" th:fragment="screen_content">
+<!--<th:block es:contain="${#url.get('appServer','/login/introduce.htm')}" ></th:block>-->
+<th:block es:contain="${#url.get('appServer','/spring/annotation/introduce.htm')}" ></th:block>
+</div>
+</body>
+</html>

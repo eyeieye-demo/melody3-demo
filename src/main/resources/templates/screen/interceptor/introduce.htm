@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  es:layout>
+<head>
+    <title>测试</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css" />
+</head>
+<body id="dd">
+<div name="index"  th:fragment="screen_content">
+<h2>拦截器</h2>
+<p>Melody中的拦截器有三种：</p>
+    <ul>
+        <h3>AutoHandlerInterceptor</h3>
+        <p>这个拦截器可以对不同handler进行拦截，并在其这个handler对应的方法执行前后执行其他方法。该拦截器是一个接口，需要使用的时候实现该它，并将其注册到springboot。实现该接口需要实现以下方法：</p>
+        <ul>
+            <li>public String[] pathPatterns()</li>
+            <p>该方法返回一个String类型的数组，数组中的内容是该拦截器可以拦截的handler的path，如"/interceptor/introduce.htm"。</p>
+            <li>public String[] excludePatterns()</li>
+            <p>该方法返回一个String类型的数组，数组中的内容是该拦截器需要排除的handler的path。</p>
+            <li>public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)</li>
+            <p>该方法可以在handler对应的方法执行前执行，其返回值可以指定handler对应的方法是否执行，true为可以执行，false为不能执行。其参数Object handler就是该拦截器处理的对象，一般要强制转换成org.springframework.web.method.HandlerMethod。</p>
+            <li>public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)</li>
+            <p>该方法可以在handler对应的方法执行后执行，该方法可以活动handler返回的ModelAndView对象，可以对页面渲染再次修改。</p>
+            <li>public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)</li>
+            <p>该方法是在上述方法均执行完后执行的。</p>
+        </ul>
+
+        <h3>AutoWebRequestInterceptor</h3>
+        <p>这个拦截器可以对Request进行拦截，并在其这个Request被响应前后执行其他方法。该拦截器是一个接口，需要使用的时候实现该它，并将其注册到springboot。实现该接口需要实现以下方法：</p>
+        <ul>
+            <li>public String[] pathPatterns()</li>
+            <p>该方法返回一个String类型的数组，数组中的内容是该拦截器可以拦截的handler的path，如"/interceptor/introduce.htm"。</p>
+            <li>public String[] excludePatterns()</li>
+            <p>该方法返回一个String类型的数组，数组中的内容是该拦截器需要排除的handler的path。</p>
+            <li>public void preHandle(WebRequest webRequest)</li>
+            <p>该方法可以在request被响应前执行，webRequest参数是传入的request对象。</p>
+            <li>public void postHandle(WebRequest webRequest, ModelMap modelMap)</li>
+            <p>该方法可以在request被响应后执行，modelMap对象喊此次响应携带的ModelMap对象，可以对页面渲染进行修改。</p>
+            <li>public void afterCompletion(WebRequest webRequest, Exception e)</li>
+            <p>该方法是在上述方法均执行完后执行的。</p>
+        </ul>
+
+        <h3>AutoAsyncWebRequestInterceptor</h3>
+        <p>这个拦截器可以对Request进行拦截，并在其这个Request被响应前后执行其他方法。该执行器是一个异步拦截器，当其拦截到request的时会异步运行，不会影响其他拦截器。该拦截器是一个接口，需要使用的时候实现该它，并将其注册到springboot。实现该接口需要实现以下方法：</p>
+        <ul>
+            <li>public String[] pathPatterns()</li>
+            <p>该方法返回一个String类型的数组，数组中的内容是该拦截器可以拦截的handler的path，如"/interceptor/introduce.htm"。</p>
+            <li>public String[] excludePatterns()</li>
+            <p>该方法返回一个String类型的数组，数组中的内容是该拦截器需要排除的handler的path。</p>
+            <li>public void preHandle(WebRequest webRequest)</li>
+            <p>该方法可以在request被响应前执行，webRequest参数是传入的request对象。</p>
+            <li>public void postHandle(WebRequest webRequest, ModelMap modelMap)</li>
+            <p>该方法可以在request被响应后执行，modelMap对象喊此次响应携带的ModelMap对象，可以对页面渲染进行修改。</p>
+            <li>public void afterCompletion(WebRequest webRequest, Exception e)</li>
+            <p>该方法是在上述方法均执行完后执行的。</p>
+        </ul>
+    </ul>
+    <li>示例：</li>
+    <p>示例请查看 com.eyeieye.melody.demo.interceptor包下的示例类。</p>
+</div>
+</body>
+</html>

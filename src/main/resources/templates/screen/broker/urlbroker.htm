@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<div name="content" th:fragment="screen_content">
+  		<pre>
+		appServer (UrlBroker):
+			<span th:text="${#url.get('appServer','/test.htm').put('aaa','bbb')}"/>
+		imageServer (UrlBroker) :
+			<span th:text="${#url.get('imageServer','/test.htm').put('aaa','bbb')}" />
+		uploadServer(RestUrlBroker):
+			<!--<span th:text="${#url.get('uploadServer','/test.htm').put('aaa','bbb')}" />-->
+		staticServer(MutiHostBroker):
+			<!--<span th:text="${#url.get('staticServer','/test.htm').put('aaa','bbb')} " />-->
+			<!--<span th:text="${#url.get('staticServer','/test.htm').put('aaa','bbb')} " />-->
+		broker的中文传值测试(多层嵌套测试)
+			<span es:contain="${#url.get('appServer','broker/params.htm').put('name','张三')} " />
+			<span es:contain="${#url.get('appServer','broker/params.htm').put('name','李四')} " />
+			<span es:contain="${#url.get('appServer','broker/params.htm').put('name','王五')} " />
+
+			<div name="widget2" es:contain="${#url.get('appServer','/broker/contain.htm').put('name','张三')}" />
+
+		</pre>
+
+
+	<p>
+	<h3>以上是测试,要新建一个urlbroker,需要在配置文件中新增小节:</h3>
+		<pre>
+			server:
+			  #端口，必须
+				port: 8080
+			  #执行路径，必须
+				context-path: /
+			  #网络协议
+				#  protocol: http
+			  #执行的域名，必须
+				domain: www.cktest.com
+				#  followContextPath: true
+		</pre>
+	</p>
+		<p>
+			<h3>然后在xml里进行配置</h3>
+
+			<bean id="appServer" class="com.eyeieye.melos.web.url.URLBroker">
+				<property name="encoding" value="${melody.web.encoding}"></property>
+				<property name="config">
+					<bean class="com.eyeieye.melody.web.url.URLConfig">
+						<property name="host" value="${staticServer.host}"/>
+						<property name="port" value="${server.port}"/>
+						<property name="path" value="${server.context-path}"/>
+						<property name="followContextPath" value="${server.followContextPath:false}"/>
+					</bean>
+				</property>
+			</bean>
+		</p>
+	<p>
+		<h3>或者你可以使用springboot的@Bean注入</h3>
+
+	@Bean("imageServer")
+	public URLBroker imageServer(@Autowired URLBroker appServer){
+		URLBroker urlBroker = new URLBroker();
+		URLConfig urlConfig = new URLConfig();
+
+		urlConfig.setHost("localhost");
+		urlConfig.setPort("80");
+		urlConfig.setPath("/");
+		urlConfig.setProtocol("http");
+
+		urlBroker.setConfig(urlConfig);
+		urlBroker.setEncoding("UTF-8");
+
+		return urlBroker;
+	}
+	</p>
+	<p>
+		<h3>在使用时,只需要将相应的路径使用#url取出来即可 </h3>
+		< div name="widget" es:contain="${#url.get('appServer','/broker/urlbroker.htm').put('aaa','bbb')}" />
+	</p>
+
+</div>
+</div>
+</body>
+</html>

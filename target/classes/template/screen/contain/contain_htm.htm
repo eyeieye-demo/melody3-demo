@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <script src="../../../../antd/.webpackrc.js"></script>
+</head>
+<body>
+<div name="content" th:fragment="screen_content">
+
+    <!--<script th:inline="javascript" src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>-->
+    <!--<script th:inline="javascript" src="../script/contain6/browser-polyfill.js"></script>-->
+    <script th:inline="javascript"  src="../script/contain/common.js" ></script>
+    <script th:inline="javascript"  src="../script/contain/reload.js" ></script>
+    <script th:inline="javascript"  src="../script/contain/lazy.js" ></script>
+    <script th:inline="javascript" >
+        function testclick (){
+            Melos.get("reladcontain").refresh()
+        }
+    </script>
+
+    这是个最正常的contain
+    <hr />
+    <div es:contain="contain.htm"></div>
+    <hr />
+    这个contain内有一些js
+    <div es:contain="http://has_js.htm"></div>
+    <hr />
+    <button onclick="testclick()">刷新</button>
+    <div th:id="reladcontain"  es:contain="lazy:${#url.get('appServer','contain/remote.htm')"></div>
+    <hr />
+    这是一个远程的contain,而且带有session
+
+    <div es:contain="${#url.get('testServer','/nosession/info.htm')}"></div>
+
+    <br />
+    <pre>
+
+        下
+        面
+        这
+        些
+        都
+        是
+        滚
+        动
+        过
+        来
+        的
+        时
+        候
+        才
+        加
+        载
+        ,
+        不
+        信
+        你
+        先
+        记
+        下
+        时
+        间
+        .
+        .
+        .
+        .
+        .
+        .
+        ..
+        .
+        .
+
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+
+        .
+        .
+        .
+        ..
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+
+        .
+        .
+        .
+        .
+    </pre>
+
+    <div  es:contain="lazy:${#url.get('appServer','contain/lazy.htm')" ></div>
+    <pre>
+
+        下
+        面
+        这
+        些
+        都
+        是
+        滚
+        动
+        过
+        来
+        的
+        时
+        候
+        才
+        加
+        载
+        ,
+        不
+        信
+        你
+        先
+        记
+        下
+        时
+        间
+        .
+        .
+        .
+        .
+        .
+        .
+        ..
+        .
+        .
+
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+
+        .
+        .
+        .
+        ..
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+
+        .
+        .
+        .
+        .
+    </pre>
+
+    <div  es:contain="lazy:${#url.get('appServer','contain/lazy.htm')" ></div>
+    <pre>
+
+        下
+        面
+        这
+        些
+        都
+        是
+        滚
+        动
+        过
+        来
+        的
+        时
+        候
+        才
+        加
+        载
+        ,
+        不
+        信
+        你
+        先
+        记
+        下
+        时
+        间
+        .
+        .
+        .
+        .
+        .
+        .
+        ..
+        .
+        .
+
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+
+        .
+        .
+        .
+        ..
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+
+        .
+        .
+        .
+        .
+    </pre>
+
+    <div  es:contain="lazy:${#url.get('appServer','contain/lazy.htm')" ></div>
+    <pre>
+
+        下
+        面
+        这
+        些
+        都
+        是
+        滚
+        动
+        过
+        来
+        的
+        时
+        候
+        才
+        加
+        载
+        ,
+        不
+        信
+        你
+        先
+        记
+        下
+        时
+        间
+        .
+        .
+        .
+        .
+        .
+        .
+        ..
+        .
+        .
+
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+
+        .
+        .
+        .
+        ..
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+
+        .
+        .
+        .
+        .
+    </pre>
+
+    <div  es:contain="lazy:${#url.get('appServer','contain/lazy.htm')" ></div>
+    <pre>
+
+        下
+        面
+        这
+        些
+        都
+        是
+        滚
+        动
+        过
+        来
+        的
+        时
+        候
+        才
+        加
+        载
+        ,
+        不
+        信
+        你
+        先
+        记
+        下
+        时
+        间
+        .
+        .
+        .
+        .
+        .
+        .
+        ..
+        .
+        .
+
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+
+        .
+        .
+        .
+        ..
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+
+        .
+        .
+        .
+        .
+    </pre>
+
+    <div  es:contain="lazy:${#url.get('appServer','contain/lazy.htm')" ></div>
+    <pre>
+
+        下
+        面
+        这
+        些
+        都
+        是
+        滚
+        动
+        过
+        来
+        的
+        时
+        候
+        才
+        加
+        载
+        ,
+        不
+        信
+        你
+        先
+        记
+        下
+        时
+        间
+        .
+        .
+        .
+        .
+        .
+        .
+        ..
+        .
+        .
+
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+
+        .
+        .
+        .
+        ..
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+
+        .
+        .
+        .
+        .
+    </pre>
+
+    <div  es:contain="lazy:${#url.get('appServer','contain/lazy.htm')" ></div>
+    <pre>
+
+        下
+        面
+        这
+        些
+        都
+        是
+        滚
+        动
+        过
+        来
+        的
+        时
+        候
+        才
+        加
+        载
+        ,
+        不
+        信
+        你
+        先
+        记
+        下
+        时
+        间
+        .
+        .
+        .
+        .
+        .
+        .
+        ..
+        .
+        .
+
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+
+        .
+        .
+        .
+        ..
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+        .
+
+        .
+        .
+        .
+        .
+    </pre>
+
+    <div  es:contain="lazy:${#url.get('appServer','contain/lazy.htm')" ></div>
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" es:layout>
+<head>
+    <title>MelodyDemo</title>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="script/chat.css"/>
+</head>
+<body>
+<div th:fragment="screen_content">
+    <h3>基本语法：</h3>
+    <div class="article">
+
+
+        <!-- 文章内容 -->
+        <div data-note-content="" class="show-content">
+            <div class="show-content-free">
+                <h3>Thymeleaf 简易教程</h3>
+                <p>本文源码可以在这里下载: <a
+                        href="https://link.jianshu.com?t=https://github.com/codergege/springmvc-thymeleaf-demo.git"
+                        target="_blank" rel="nofollow">https://github.com/codergege/springmvc-thymeleaf-demo.git</a></p>
+                <div class="melody-code-wrap"><pre class="hljs bash"><code class=" bash">git <span class="hljs-built_in">clone</span> https://github.com/codergege/springmvc-thymeleaf-demo.git
+<span class="hljs-built_in">cd</span> springmvc-thymeleaf-demo
+./gradlew appRun               </code></pre>
+                </div>
+                <p>我没在 windows 中试过, 如果运行不起来, 看源码吧 ...<!-- TODO: FIX HERE -->
+                <h3>1. SpringMVC 中整合 Thymeleaf</h3>
+                <p>首先要加入 thymeleaf 依赖. 如果你用 gradle, 加入这样的依赖就可以了:</p>
+
+                <div class="melody-code-wrap"><pre class="hljs groovy"><code class=" groovy"><span class="hljs-comment">// thymeleaf 视图</span>
+compile <span class="hljs-string">group:</span> <span class="hljs-string">'org.thymeleaf'</span>, <span
+                            class="hljs-string">name:</span> <span class="hljs-string">'thymeleaf-spring4'</span>, <span
+                            class="hljs-string">version:</span> thymeleafVersion
+</code></pre>
+                </div>
+                <p>version 那里可以换成自己想用的版本.</p>
+                <p>Demo 项目中使用 gradle + springmvc + thymeleaf</p>
+                <p>根据需要可以将 gradle 换成 maven.</p>
+                <p>三个必须配的 bean.</p>
+                <p>Demo 项目中使用 JavaConfig 的方式, 你也可以使用 xml 方式配置.</p>
+                <div class="melody-code-wrap"><pre class="hljs java"><code class=" java">
+<span class="hljs-meta">@Configuration</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span
+                        class="hljs-title">ThymeleafConfig</span> <span class="hljs-keyword">implements</span> <span
+                        class="hljs-title">ApplicationContextAware</span> </span>{
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span
+                        class="hljs-keyword">final</span> String UTF8 = <span class="hljs-string">"UTF-8"</span>;
+    <span class="hljs-keyword">private</span> ApplicationContext applicationContext;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span
+            class="hljs-title">setApplicationContext</span><span class="hljs-params">(ApplicationContext applicationContext)</span> <span
+            class="hljs-keyword">throws</span> BeansException </span>{
+        <span class="hljs-keyword">this</span>.applicationContext = applicationContext;
+    }
+
+    <span class="hljs-comment">/* **************************************************************** */</span>
+    <span class="hljs-comment">/*  THYMELEAF-SPECIFIC ARTIFACTS                                    */</span>
+    <span class="hljs-comment">/*  TemplateResolver &lt;- TemplateEngine &lt;- ViewResolver              */</span>
+    <span class="hljs-comment">/* **************************************************************** */</span>
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> SpringResourceTemplateResolver <span
+            class="hljs-title">templateResolver</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-comment">// SpringResourceTemplateResolver automatically integrates with Spring's own</span>
+        <span class="hljs-comment">// resource resolution infrastructure, which is highly recommended.</span>
+        SpringResourceTemplateResolver templateResolver = <span class="hljs-keyword">new</span> SpringResourceTemplateResolver();
+        templateResolver.setApplicationContext(<span class="hljs-keyword">this</span>.applicationContext);
+        templateResolver.setPrefix(<span class="hljs-string">"/WEB-INF/templates/"</span>);
+        templateResolver.setSuffix(<span class="hljs-string">".html"</span>);
+        <span class="hljs-comment">// HTML is the default value, added here for the sake of clarity.</span>
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+        <span class="hljs-comment">// Template cache is true by default. Set to false if you want</span>
+        <span class="hljs-comment">// templates to be automatically updated when modified.</span>
+        <span class="hljs-comment">// Template 缓存, 如果设置为 false, 那么当 templates 改变时会自动更新</span>
+        templateResolver.setCacheable(<span class="hljs-keyword">false</span>);
+        <span class="hljs-keyword">return</span> templateResolver;
+    }
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> SpringTemplateEngine <span class="hljs-title">templateEngine</span><span
+            class="hljs-params">()</span></span>{
+        <span class="hljs-comment">// SpringTemplateEngine automatically applies SpringStandardDialect and</span>
+        <span class="hljs-comment">// enables Spring's own MessageSource message resolution mechanisms.</span>
+        SpringTemplateEngine templateEngine = <span class="hljs-keyword">new</span> SpringTemplateEngine();
+        templateEngine.setTemplateResolver(templateResolver());
+        <span class="hljs-comment">// Enabling the SpringEL compiler with Spring 4.2.4 or newer can</span>
+        <span class="hljs-comment">// speed up execution in most scenarios, but might be incompatible</span>
+        <span class="hljs-comment">// with specific cases when expressions in one template are reused</span>
+        <span class="hljs-comment">// across different data types, so this flag is "false" by default</span>
+        <span class="hljs-comment">// for safer backwards compatibility.</span>
+        templateEngine.setEnableSpringELCompiler(<span class="hljs-keyword">true</span>);
+        <span class="hljs-keyword">return</span> templateEngine;
+    }
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ThymeleafViewResolver <span class="hljs-title">viewResolver</span><span
+            class="hljs-params">()</span></span>{
+        ThymeleafViewResolver viewResolver = <span class="hljs-keyword">new</span> ThymeleafViewResolver();
+        viewResolver.setTemplateEngine(templateEngine());
+        viewResolver.setCharacterEncoding(UTF8);
+        <span class="hljs-keyword">return</span> viewResolver;
+    }
+}
+</code></pre>
+                </div>
+                <p>准备就绪, 可以愉快的玩耍 thymeleaf 了, let's go!</p>
+                <h3>2. 使用 th:text</h3>
+                <h3>2.1 外部文本(消息)</h3>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-tag">&lt;<span
+                        class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span class="hljs-string">"#{index.welcome}"</span>&gt;</span>Welcome Message<span
+                        class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+</code></pre>
+                </div>
+                <p>外部文本的概念: 外部文本抽取模板代码片段到模板文件外面, 使外部文本可以存在另一个<br>
+                    文件中(比如 properties 文件). 通常把外部文本叫做消息(messages).</p>
+                <p>Thymeleaf 通过 <code>#{...}</code> 语法来使用消息.</p>
+                <p>在 springmvc 中使用消息要额外配置 ResourceBundleMessageSource 这个 bean:</p>
+                <div class="melody-code-wrap"><pre class="hljs java"><code class="java">    <span class="hljs-comment">// 用于外部文本及国际化消息</span>
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ResourceBundleMessageSource <span
+            class="hljs-title">messageSource</span><span class="hljs-params">()</span> </span>{
+        ResourceBundleMessageSource messageSource = <span class="hljs-keyword">new</span> ResourceBundleMessageSource();
+        messageSource.setBasename(<span class="hljs-string">"messages"</span>);
+        <span class="hljs-keyword">return</span> messageSource;
+    }
+</code></pre>
+                </div>
+                <p>这个 bean 会去 classpath 根目录下去寻找 messages 为基名的 properties 文件. 比如,<br>
+                    messages.properties, messages_en_US.properties, messages_zh_CN.properties.</p>
+                <p><code>th:text</code> 外部文本会替换 p 标签内的内容.</p>
+                <h3>2.2 使消息不转换 html 标签</h3>
+                <p>如果我们在 messages.properites 中这么写: <code>index.welcome=Welcome to
+                    &lt;b&gt;SpringMVC&lt;/b&gt;</code><br>
+                    那么 thymeleaf 会转成 <code>&lt;p&gt;Welcome to
+                        &amp;lt;b&amp;gt;SpringMVC&amp;lt;/b&amp;gt;&lt;/p&gt;</code> 这显然不是<br>
+                    我们想要的. 这时候就可以用 <code>th:utext</code>(for “unescaped text)</p>
+                <h3>2.3 使用并显示变量</h3>
+                <p>变量概念: 存在 java web 上下文中的变量. 比如 request, session, application, page ...</p>
+                <p>用 <code>${...}</code> 语法可以用来显示变量. 花括号内使用的是 ognl 表达式语言.</p>
+                <p>springmvc 中用 spel 语言代替 ognl 语言.</p>
+                <h3>3. 标准表达式语法</h3>
+                <p>概览:</p>
+                <ul>
+                    <li>
+                        <p>简单表达式</p>
+                        <ul>
+                            <li>变量表达式: <code>${...}</code>
+                            </li>
+                            <li>选择变量表达式: <code>*{...}</code>
+                            </li>
+                            <li>消息表达式: <code>#{...}</code>
+                            </li>
+                            <li>URL 表达式: <code>@{...}</code>
+                            </li>
+                            <li>代码段表达式: <code>~{...}</code>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p>字面量</p>
+                        <ul>
+                            <li>文本字面量: <code>'some text'</code>
+                            </li>
+                            <li>数值字面量: <code>0, 34, 3.0, 12.3</code>
+                            </li>
+                            <li>布尔值字面量: <code>true, false</code>
+                            </li>
+                            <li>Null 值字面量: <code>null</code>
+                            </li>
+                            <li>Tokens 字面量: <code>one, content, sometext, ...</code>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p>文本操作符</p>
+                        <ul>
+                            <li>字符串连接: <code>+</code>
+                            </li>
+                            <li>字面量替换: <code>|The name is ${name}|</code>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p>算术操作符</p>
+                        <ul>
+                            <li>二元操作符: <code>+, -, *, /, %</code>
+                            </li>
+                            <li>减号(一元操作符): <code>-</code>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p>布尔操作符(逻辑操作符)</p>
+                        <ul>
+                            <li>二元操作符: <code>and, or</code>
+                            </li>
+                            <li>非(一元操作符): <code>!, not</code>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p>比较操作符</p>
+                        <ul>
+                            <li>比较: <code>&gt;, &lt;, &gt;=, &lt;= (gt, lt, ge, le)</code>
+                            </li>
+                            <li>相等性: <code>==, != (eq, ne)</code>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p>条件操作符</p>
+                        <ul>
+                            <li>if-then: <code>(if) ? (then)</code>
+                            </li>
+                            <li>if-then-else: '(if) ? (then) : (else)'</li>
+                            <li>默认: (value) ?: (defaultvalue)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p>特殊符号</p>
+                        <ul>
+                            <li>忽略 Thymeleaf 操作: <code>_</code>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <p>所有这些特性都可以组合, 嵌套使用.</p>
+                <h3>3.1 消息</h3>
+                <p>消息中也可以包含变量, 比如在 <code>index.welcome</code> 中, 想打印出时间:</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"># 在 messages.properties 文件中用 {0}, {1}, {2}, ... 占位符
+index.welcome=Welcome to <span class="hljs-tag">&lt;<span class="hljs-name">b</span>&gt;</span>SpringMVC<span
+                            class="hljs-tag">&lt;/<span class="hljs-name">b</span>&gt;</span>, time is: {0}
+</code></pre>
+                </div>
+                <p>那么在 index.html 模板文件中就可以这样写:</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-tag">&lt;<span
+                        class="hljs-name">p</span> <span class="hljs-attr">th:utext</span>=<span class="hljs-string">"#{index.welcome(${date})}"</span>&gt;</span>Welcome message<span
+                        class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+</code></pre>
+                </div>
+                <p>其中 <code>${date}</code> 就像一个参数那样被传进去了.</p>
+                <h3>3.2 变量</h3>
+                <p>变量表达式 <code>${...}</code> 用的是 ognl(对象图导航语言). 在 springmvc 中用 spel(spring 表达式语言)<br>
+                    代替. 其实两者在大部分情况下用法是相同的.</p>
+                <p>Ognl, spel 不在本文范围, 不展开讨论了.</p>
+                <p>下面看几个例子就知道变量表达式的大部分用法了.</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-comment">&lt;!-- springmvc 保存了一个 model 对象: departments --&gt;</span>
+
+<span class="hljs-comment">&lt;!-- 获取所有 departments --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span
+        class="hljs-string">"${departments}"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">p</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- 获取 departments 的第一个元素 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span
+        class="hljs-string">"${departments[0]}"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">p</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- 获取第一个 department 对象的 name 属性 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span
+        class="hljs-string">"${departments[0].name}"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">p</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- 也可以用 ['name'] 来获取第一个 department 对象的 name 属性 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span
+        class="hljs-string">"${departments[0]['name']}"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">p</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- 甚至可以调用方法! --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span
+        class="hljs-string">"${departments[0].getId()}"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span
+        class="hljs-string">"${departments[0]['name'].substring(0, 1)}"</span>&gt;</span><span
+                            class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+</code></pre>
+                </div>
+                <h4>3.2.1 内置基本对象</h4>
+                <p>下面是一些内置的基本对象, 可以用 <code>#</code> 符号直接使用</p>
+                <ul>
+                    <li>
+                        <h3>ctx: the context object.</h3>
+                    </li>
+                    <li>
+                        <h3>vars: the context variables.</h3>
+                    </li>
+                    <li>
+                        <h3>locale: the context locale.</h3>
+                    </li>
+                    <li>
+                        <h3>request: (only in Web Contexts) the HttpServletRequest object.</h3>
+                    </li>
+                    <li>
+                        <h3>response: (only in Web Contexts) the HttpServletResponse object.</h3>
+                    </li>
+                    <li>
+                        <h3>session: (only in Web Contexts) the HttpSession object.</h3>
+                    </li>
+                    <li>
+                        <h3>servletContext: (only in Web Contexts) the ServletContext object.</h3>
+                    </li>
+                </ul>
+                <p>使用例子:</p>
+                <div class="melody-code-wrap"><pre class="hljs javascript"><code class="javascript">country: <span
+                        class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span
+                        class="hljs-attr">th:text</span>=<span
+                        class="hljs-string">"${#locale.country}"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                        class="hljs-name">span</span>&gt;</span></span>
+</code></pre>
+                </div>
+                <h4>3.2.2 内置工具对象</h4>
+                <p>除了基本对象, thymeleaf 还提供了一组工具对象.</p>
+                <ul>
+                    <li>
+                        <h3>execInfo: information about the template being processed.</h3>
+                    </li>
+                    <li>
+                        <h3>messages: methods for obtaining externalized messages inside variables expressions, in the
+                            same way as they would be obtained using #{…} syntax.</h3>
+                    </li>
+                    <li>
+                        <h3>uris: methods for escaping parts of URLs/URIs</h3>
+                    </li>
+                    <li>
+                        <h3>conversions: methods for executing the configured conversion service (if any).</h3>
+                    </li>
+                    <li>
+                        <h3>dates: methods for java.util.Date objects: formatting, component extraction, etc.</h3>
+                    </li>
+                    <li>
+                        <h3>calendars: analogous to #dates, but for java.util.Calendar objects.</h3>
+                    </li>
+                    <li>
+                        <h3>numbers: methods for formatting numeric objects.</h3>
+                    </li>
+                    <li>
+                        <h3>strings: methods for String objects: contains, startsWith, prepending/appending, etc.</h3>
+                    </li>
+                    <li>
+                        <h3>objects: methods for objects in general.</h3>
+                    </li>
+                    <li>
+                        <h3>bools: methods for boolean evaluation.</h3>
+                    </li>
+                    <li>
+                        <h3>arrays: methods for arrays.</h3>
+                    </li>
+                    <li>
+                        <h3>lists: methods for lists.</h3>
+                    </li>
+                    <li>
+                        <h3>sets: methods for sets.</h3>
+                    </li>
+                    <li>
+                        <h3>maps: methods for maps.</h3>
+                    </li>
+                    <li>
+                        <h3>aggregates: methods for creating aggregates on arrays or collections.</h3>
+                    </li>
+                    <li>
+                        <h3>ids: methods for dealing with id attributes that might be repeated (for example, as a result
+                            of an iteration).</h3>
+                    </li>
+                </ul>
+                <p>例子, 格式化时间:</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-comment">&lt;!-- 时间格式化 --&gt;</span>
+time:<span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">th:text</span>=<span
+                            class="hljs-string">"${#dates.format(date, 'yyyy-MM-dd HH:mm:ss')}"</span>&gt;</span><span
+                            class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;<span
+                            class="hljs-name">br</span>&gt;</span>
+</code></pre>
+                </div>
+                <h3>3.3 选择变量表达式</h3>
+                <p>获取变量可以使用 <code>${...}</code> 语法外, 还可以使用 <code>*{...}</code>, 称为选择变量表达式.</p>
+                <p>选择变量表达式与变量表达式的不同之处在于, 如果前面有一个选择对象了, 那么用它获取<br>
+                    这个选择对象的属性或方法时, 可以不写对象名.</p>
+                <p>那么选择对象的概念是什么呢? 选择对象是用 <code>th:object</code> 表示的对象.</p>
+                <p>看例子:</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-tag">&lt;<span
+                        class="hljs-name">p</span>&gt;</span>选择变量表达式<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">th:object</span>=<span
+        class="hljs-string">"${departments[1]}"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span
+            class="hljs-string">"*{id}"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span
+            class="hljs-string">"*{name}"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>等价的变量表达式<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span
+            class="hljs-string">"${departments[1].id}"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- 如果没有 "选择对象", 那么 * 和 $ 是等价的 --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span
+            class="hljs-string">"*{departments[1].name}"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+                </div>
+                <p>如果存在选择对象了, 那么在 <code>${...}</code> 中也可以用 <code>#object</code> 来使用选择对象.</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-tag">&lt;<span
+                        class="hljs-name">p</span>&gt;</span>${...} 中使用 #object 引用 "选择对象"<span
+                        class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">th:object</span>=<span
+        class="hljs-string">"document[2]"</span>&gt;</span>
+    <span class="hljs-comment">&lt;!--　以下三种方式在这种情况下是等价的 --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span
+            class="hljs-string">"${#object.id}"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span
+            class="hljs-string">"*{id}"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span
+            class="hljs-string">"${document[2].id}"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+                </div>
+                <h3>3.4 Link URL 表达式</h3>
+                <p>链接 URL 表达式语法是 <code>@{...}</code></p>
+                <p>有不同类型的 URLs:</p>
+                <ul>
+                    <li><p>绝对路径 URLs: <code>http://localhost:8888/demo/index</code></p></li>
+                    <li>
+                        <p>相对路径 URLs:</p>
+                        <ul>
+                            <li>页面相对: <code>user/login.html</code>
+                            </li>
+                            <li>
+                                <strong>上下文相对</strong>: <code>/employee/emps</code> 注意用 <code>/</code> 打头, 会自动把上下文路径(比如
+                                <a href="https://link.jianshu.com?t=http://localhost:8888/demo" target="_blank"
+                                   rel="nofollow">http://localhost:8888/demo</a>) 路径加上去.
+                            </li>
+                            <li>服务器相对(不重要)</li>
+                            <li>协议相对(不重要)</li>
+                        </ul>
+                    </li>
+                </ul>
+                <p>例子:</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-comment">&lt;!-- Common styles and scripts --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span
+        class="hljs-string">"stylesheet"</span> <span class="hljs-attr">type</span>=<span
+        class="hljs-string">"text/css"</span> <span class="hljs-attr">media</span>=<span
+        class="hljs-string">"all"</span> <span class="hljs-attr">th:href</span>=<span class="hljs-string">"@{/assets/css/base.css}"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span
+        class="hljs-string">"text/javascript"</span> <span class="hljs-attr">th:src</span>=<span class="hljs-string">"@{/assets/ext/jquery-3.1.1-min.js}"</span>&gt;</span><span
+                            class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span
+        class="hljs-string">"text/javascript"</span> <span class="hljs-attr">th:src</span>=<span class="hljs-string">"@{/assets/js/codergege.js}"</span>&gt;</span><span
+                            class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- ... --&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span
+        class="hljs-string">"#"</span> <span class="hljs-attr">th:href</span>=<span class="hljs-string">"@{/}"</span>&gt;</span>返回首页<span
+                            class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span> <span class="hljs-tag">&lt;<span
+                            class="hljs-name">br</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span
+        class="hljs-string">"#"</span> <span class="hljs-attr">th:href</span>=<span class="hljs-string">"@{/thymeleaf/demo1}"</span>&gt;</span>去 demo1 页面<span
+                            class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span> <span class="hljs-tag">&lt;<span
+                            class="hljs-name">br</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- 会生成 url: http://localhost:8888/demo/thymeleaf/demo1?username=赵波 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span
+        class="hljs-string">"#"</span> <span class="hljs-attr">th:href</span>=<span class="hljs-string">"@{/thymeleaf/demo1(username=${employees[0].name})}"</span>&gt;</span>去 demo1 页面, 带参数<span
+                            class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span> <span class="hljs-tag">&lt;<span
+                            class="hljs-name">br</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- 会生成 url: http://localhost:8888/demo/thymeleaf/demo1/2 RESTful 风格的 url --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span
+        class="hljs-string">"#"</span> <span class="hljs-attr">th:href</span>=<span class="hljs-string">"@{/thymeleaf/demo1/{empId}(empId=${employees[1].id})}"</span>&gt;</span>去 demo1 页面, 带 RESTful 风格参数<span
+                            class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span> <span class="hljs-tag">&lt;<span
+                            class="hljs-name">br</span>&gt;</span>
+</code></pre>
+                </div>
+                <p>中文会自动转码; 如果有多个参数，用逗号隔开.</p>
+                <h3>3.5 代码段(fragment)</h3>
+                <p>语法: <code>~{...}</code></p>
+                <p>最常见的用法是与 <code>th:insert</code> 或 <code>th:replace</code> 配合使用. 例如:</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml">
+<span class="hljs-comment">&lt;!-- ~{...} 可以省略不写 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">header</span> <span class="hljs-attr">id</span>=<span
+        class="hljs-string">"header"</span> <span class="hljs-attr">th:replace</span>=<span class="hljs-string">"fragment :: header"</span>&gt;</span><span
+                        class="hljs-tag">&lt;/<span class="hljs-name">header</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">footer</span> <span class="hljs-attr">id</span>=<span
+        class="hljs-string">"footer"</span> <span class="hljs-attr">th:replace</span>=<span class="hljs-string">"~{fragment :: footer}"</span>&gt;</span><span
+                        class="hljs-tag">&lt;/<span class="hljs-name">footer</span>&gt;</span>
+
+</code></pre>
+                </div>
+                <h3>3.6 字面量</h3>
+                <h4>3.6.1 文本字面量</h4>
+                <p>很简单, 用单引号包裹起来就是一个文本字面量了. 文本字面量可以包含任意字符, 但是如<br>
+                    果想包含 <code>'</code> , 得用 \ 进行转意.</p>
+                <div class="melody-code-wrap"><pre class="hljs javascript"><code class="javascript">&lt;p th:text=<span
+                        class="hljs-string">"'Any characters, &lt;br&gt;Let\'s&lt;/br&gt; go!'"</span>&gt;<span
+                        class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span>
+</code></pre>
+                </div>
+                <p>页面上显示效果:</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml">Any characters, <span
+                        class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>Let's<span class="hljs-tag">&lt;/<span
+                        class="hljs-name">br</span>&gt;</span> go!
+</code></pre>
+                </div>
+                <p>可以看到 <code>&lt;br&gt;</code> 不会被 html 解析, 按字面量显示了!</p>
+                <h4>3.6.2 数字字面量</h4>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-tag">&lt;<span
+                        class="hljs-name">p</span>&gt;</span>
+    今年是 <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">th:text</span>=<span
+                            class="hljs-string">"2017"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>
+    明年是 <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">th:text</span>=<span
+                            class="hljs-string">"2017 + 1"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+</code></pre>
+                </div>
+                <p>页面显示效果:</p>
+                <div class="melody-code-wrap"><pre class="hljs undefined"><code>今年是 2017
+明年是 2018
+</code></pre>
+                </div>
+                <h4>3.6.3 布尔值字面量</h4>
+                <p>布尔值字面量直接用 true, false 就可以了.</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-tag">&lt;<span
+                        class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">th:if</span>=<span
+            class="hljs-string">"${departments.size() &gt; 0} == true"</span>&gt;</span>条件是真, div 内会被解析, 内容会显示<span
+                            class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">th:if</span>=<span
+            class="hljs-string">"${departments.size() &gt; 0} == false"</span>&gt;</span>条件是假, 这个 div 元素不会被解析, 所以不会显示<span
+                            class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">th:if</span>=<span
+            class="hljs-string">"${(departments.size() &gt; 0) == true}"</span>&gt;</span>
+        == 可以放在 {} 内部, 这种情况下, 表达式计算用的是 ognl/spel 引擎. 条件是真, div 内会被解析, 内容会显示
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+</code></pre>
+                </div>
+                <p>页面显示效果:</p>
+                <div class="melody-code-wrap"><pre class="hljs undefined"><code>条件是真, div 内会被解析, 内容会显示
+== 可以放在 {} 内部, 这种情况下, 表达式计算用的是 ognl/spel 引擎. 条件是真, div 内会被解析, 内容会显示
+</code></pre>
+                </div>
+                <p>注意看第二个 div, <code>th:if</code> 返回 false 后, 这个 div 元素就不会在页面中存在了.</p>
+                <p>第三个 div, == 放在了 {} 内部, 此时整个 {} 内的表达式用 ognl/spel 引擎计算; 如果<br>
+                    == 放在外部, 那么 thymeleaf 引擎负责计算是否相等.</p>
+                <h4>3.6.4 null 字面量</h4>
+                <div class="melody-code-wrap"><pre class="hljs bash"><code class="bash">&lt;div th:<span
+                        class="hljs-keyword">if</span>=<span class="hljs-string">"<span class="hljs-variable">${departments}</span> != null"</span>&gt;会显示&lt;/div&gt;
+&lt;div th:<span class="hljs-keyword">if</span>=<span class="hljs-string">"<span class="hljs-variable">${departments != null}</span>"</span>&gt;用 ognl/spel 引擎, 会显示&lt;/div&gt;
+</code></pre>
+                </div>
+                <p>页面显示效果:</p>
+                <div class="melody-code-wrap"><pre class="hljs undefined"><code>会显示
+用 ognl/spel 引擎, 会显示
+</code></pre>
+                </div>
+                <h4>3.6.5 字面量 tokens</h4>
+                <p>数值, 布尔值, null 实际上是 tokens 字面量的特别情况.</p>
+                <p>Tokens 字面量允许省略单引号, 只要符合: 由 A-Z, a-z, 0-9, 方括号([, ]), 点(.), 连字符(-),<br>
+                    下划线(_) 组成.</p>
+                <p>所以, 没有空格, 逗号等等.</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-tag">&lt;<span
+                        class="hljs-name">div</span> <span class="hljs-attr">th:text</span>=<span class="hljs-string">"content"</span>&gt;</span>...<span
+                        class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- 上面就等价于 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">th:text</span>=<span
+        class="hljs-string">"'content'"</span>&gt;</span>...<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">div</span>&gt;</span>
+</code></pre>
+                </div>
+                <h3>3.7 连接字符串</h3>
+                <p>文本, 不管是文本字面量还是通过 ognl/spel 计算出来的文本, 都能用 + 操作符连接.</p>
+                <div class="melody-code-wrap"><pre class="hljs javascript"><code
+                        class="javascript">&lt;span th:text=<span class="hljs-string">"'Some literal text and ' + ${departments[0].name}"</span>&gt;<span
+                        class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span></span>
+</code></pre>
+                </div>
+                <h3>3.8 字面量替换</h3>
+                <p>使用字面量替换, 可以省去 '...' + '...' 这种麻烦. 语法是 <code>|...|</code></p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-tag">&lt;<span
+                        class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span class="hljs-string">"|一共有 ${departments.size()} 个部门|"</span>&gt;</span><span
+                        class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- 等价于下面 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span
+        class="hljs-string">"'一共有 ' + ${departments.size()} + ' 个部门'"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">p</span>&gt;</span>
+<span class="hljs-comment">&lt;!--还可以混合使用--&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span
+        class="hljs-string">"'一共有 ' + |${departments.size()} 个部门|"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">p</span>&gt;</span>
+</code></pre>
+                </div>
+                <p><code>|...|</code> 内部只允许使用变量表达式, 不能有其他的 '...' 字面量, 布尔值数值字面量, 以及<br>
+                    条件表达式等等.</p>
+                <h3>3.9 算术操作符</h3>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-tag">&lt;<span
+                        class="hljs-name">div</span> <span class="hljs-attr">th:with</span>=<span class="hljs-string">"isEven = (${employees.size()} % 2 == 0)"</span>&gt;</span><span
+                        class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- 也可以包含在 {} 内, 那么 {} 内的整体就是一个 ognl/spel 表达式, 由 ognl/spel 引擎负责计算 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">th:with</span>=<span
+        class="hljs-string">"isOdd = ${employees.size() % 2 == 1}"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">th:if</span>=<span
+            class="hljs-string">"${isOdd}"</span>&gt;</span>是奇数<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">th:if</span>=<span
+            class="hljs-string">"!${isOdd}"</span>&gt;</span>是偶数<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+                </div>
+                <p>注意 <code>th:with</code> 的作用是声明一个局部变量. 这个局部变量的作用域是 声明时的元素及其<br>
+                    子元素.</p>
+                <p>所以如果放在 声明 isOdd 变量的 div 外面, isOdd 变量就不存在了.</p>
+                <h3>3.10 比较与相等操作符</h3>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-comment">&lt;!-- &gt;, &lt;, 必须转意才能用 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">th:if</span>=<span
+        class="hljs-string">"${departments.size()} &amp;gt; 1"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">th:text</span>=<span
+            class="hljs-string">"|部门数量是 ${departments.size()}|"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- 可以用 gt, lt, ge, le 来代替, 这种比较好 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">th:if</span>=<span
+        class="hljs-string">"${departments.size()} ge 3"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>至少有 3 个部门<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+                </div>
+                <h3>3.11 条件表达式与默认表达式</h3>
+                <p>条件表达式由 3 个部分组成, condition, then, else. 每个部分自身又是一个表达式, 即<br>
+                    它们分别可以用变量(<code>${...}, *{...}</code>), 消息(<code>#{...}</code>), URLs(<code>@{...}</code>),
+                    字面量等来<br>
+                    表示.</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-comment">&lt;!-- else 部分可以省略, 这种情况下, 如果条件为 false, null 值会被返回 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:class</span>=<span
+        class="hljs-string">"${employees[0].id % 2 == 0}? 'even'"</span> <span class="hljs-attr">th:text</span>=<span
+        class="hljs-string">"${employees[0].name}"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:class</span>=<span
+        class="hljs-string">"${employees[1].id % 2 == 0}? 'even': 'odd'"</span> <span
+        class="hljs-attr">th:text</span>=<span class="hljs-string">"${employees[1].name}"</span>&gt;</span><span
+                            class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:class</span>=<span
+        class="hljs-string">"${employees[2].id % 2 == 0}? 'even': 'odd'"</span> <span
+        class="hljs-attr">th:text</span>=<span class="hljs-string">"${employees[2].name}"</span>&gt;</span><span
+                            class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- ?: 默认表达式 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">th:text</span>=<span
+        class="hljs-string">"${employees[0].getGender()}?: '没有指定性别'"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">th:text</span>=<span
+        class="hljs-string">"${employees[2].getEmail()}?: '没有指定邮箱'"</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- 可以嵌套混合, 嵌套的话用 () 包起来 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">th:text</span>=<span
+        class="hljs-string">"(${employees[0].getGender()} == 1 ? '男': '女')?: '没有指定性别'"</span>&gt;</span><span
+                            class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+</code></pre>
+                </div>
+                <h3>3.12 No-Op 操作符(_)</h3>
+                <p>No-Op 操作符指明期待的表达式结果不做任何事情. 比如说 th:text 中最后计算结果是 <code>_</code><br>
+                    那么 th:text 元素根本就不会生成.</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-tag">&lt;<span
+                        class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span
+                        class="hljs-string">"_"</span>&gt;</span>这里的内容不会被 th:text 替换<span class="hljs-tag">&lt;/<span
+                        class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:text</span>=<span
+        class="hljs-string">"${employees[0].email}?: _"</span>&gt;</span>没有指定电子邮箱<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">p</span>&gt;</span>
+</code></pre>
+                </div>
+                <h3>3.13 数据转换与格式化</h3>
+                <p>Thymeleaf 的变量表达式(<code>${...}, *{...}</code>)使用 <code>{{...}}</code> 来表示需要进行转换. 允许我<br>
+                    们使用自定义的数据转换服务来转换表达式返回结果.</p>
+                <p>使用 thymeleaf-spring3 和 thymeleaf-spring4 的话, 会自动调用 spring 的 Conversion<br>
+                    Service.</p>
+                <h3>3.14 预处理表达式</h3>
+                <p>用双下划线 <code>__...__</code> 包裹普通的表达式就可以.</p>
+                <h3>4. 设置属性值</h3>
+                <p>本章学习 thymeleaf 如何设置或修改 html 元素属性.</p>
+                <h3>4.1 设置任意属性 th:attr</h3>
+                <p>可以用 <code>th:attr</code> 来设置任意属性.</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-comment">&lt;!-- 替换 action 属性 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">action</span>=<span
+        class="hljs-string">"#"</span> <span class="hljs-attr">th:attr</span>=<span class="hljs-string">"action=@{/suscribe}"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span
+            class="hljs-string">"text"</span> <span class="hljs-attr">name</span>=<span
+            class="hljs-string">"name"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span
+            class="hljs-string">"text"</span> <span class="hljs-attr">name</span>=<span
+            class="hljs-string">"gender"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span
+            class="hljs-string">"text"</span> <span class="hljs-attr">name</span>=<span
+            class="hljs-string">"birthday"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span
+            class="hljs-string">"text"</span> <span class="hljs-attr">name</span>=<span
+            class="hljs-string">"email"</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- todo select departments --&gt;</span>
+    <span class="hljs-comment">&lt;!-- 一次替换多个属性值 1) submit 按钮的 value 属性; 2) class 属性  --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span
+            class="hljs-string">"submit"</span> <span class="hljs-attr">value</span>=<span
+            class="hljs-string">"Submit"</span> <span class="hljs-attr">th:attr</span>=<span class="hljs-string">"value=#{form.submit}, class='sep'"</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span>
+</code></pre>
+                </div>
+                <h3>4.2 设置指定属性</h3>
+                <p>一般 <code>th:attr</code> 很少会用到, 而是会直接使用指定的 <code>th:*</code>.</p>
+                <p>比如已经用过的 <code>th:href, th:text, th:value, th:action ...</code></p>
+                <p>几乎所有的 html 元素属性都有对应的 <code>th:*</code> 版本.</p>
+                <h3>4.3 追加属性</h3>
+                <p>可以使用 <code>th:attrappend, th:attrprepend</code> 来追加(不是替换)属性值.</p>
+                <p>这个不常用.</p>
+                <p>但是 <code>th:classappend</code> 比较常用:</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-tag">&lt;<span
+                        class="hljs-name">p</span> <span class="hljs-attr">class</span>=<span
+                        class="hljs-string">"row"</span> <span class="hljs-attr">th:classappend</span>=<span
+                        class="hljs-string">"odd"</span>&gt;</span>aaaaa<span class="hljs-tag">&lt;/<span
+                        class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">class</span>=<span
+        class="hljs-string">"row"</span> <span class="hljs-attr">th:classappend</span>=<span class="hljs-string">"${employees[0].id % 2 == 1} ? 'odd'"</span>&gt;</span>aaaaa<span
+                            class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+</code></pre>
+                </div>
+                <h3>4.4 固定值布尔属性</h3>
+                <p>典型代表就是 checkbox, radio 中的 checked 属性了.</p>
+                <p>可以使用 <code>th:checked</code> 来设置, 如果表达式返回 true, checked 就被设置, 返回 false,<br>
+                    checked 属性就不会加上去.</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-tag">&lt;<span
+                        class="hljs-name">form</span> <span class="hljs-attr">action</span>=<span class="hljs-string">"#"</span> <span
+                        class="hljs-attr">th:object</span>=<span class="hljs-string">"${employees[0]}"</span>&gt;</span>
+    男 <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span
+                            class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span
+                            class="hljs-string">"gender"</span> <span class="hljs-attr">th:checked</span>=<span
+                            class="hljs-string">"*{gender} == 1"</span>&gt;</span>
+    女 <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span
+                            class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span
+                            class="hljs-string">"gender"</span> <span class="hljs-attr">th:checked</span>=<span
+                            class="hljs-string">"*{gender} == 0"</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span>
+</code></pre>
+                </div>
+                <h3>4.5 任意属性处理器</h3>
+                <p><code>th:*</code> 中, * 如果不是 html 中的属性, 也会当成属性加进去.</p>
+                <div class="melody-code-wrap"><pre class="hljs javascript"><code
+                        class="javascript">&lt;span th:xxx=<span
+                        class="hljs-string">"${employees[2].name}"</span>&gt;<span class="xml"><span class="hljs-tag">&lt;/<span
+                        class="hljs-name">span</span>&gt;</span></span>
+</code></pre>
+                </div>
+                <p>通过查看页面源码, 可以看到:</p>
+                <div class="melody-code-wrap"><pre class="hljs javascript"><code class="javascript">&lt;span xxx=<span
+                        class="hljs-string">"aa"</span>&gt;<span class="xml"><span class="hljs-tag">&lt;/<span
+                        class="hljs-name">span</span>&gt;</span></span>
+</code></pre>
+                </div>
+                <h3>5. 迭代</h3>
+                <h3>5.1 迭代初步</h3>
+                <h4>使用 <code>th:each</code>
+                </h4>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-tag">&lt;<span
+                        class="hljs-name">ul</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span>编号<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span>姓名<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span>性别<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span>生日<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span>部门<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span>编辑<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span>删除<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">th:each</span>=<span
+            class="hljs-string">"emp : ${employees}"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span> <span class="hljs-attr">th:text</span>=<span class="hljs-string">"${emp.id}"</span>&gt;</span><span
+                            class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span> <span class="hljs-attr">th:text</span>=<span class="hljs-string">"${emp.name}"</span>&gt;</span><span
+                            class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span> <span class="hljs-attr">th:text</span>=<span class="hljs-string">"${emp.gender == 1} ? '男': '女'"</span>&gt;</span><span
+                            class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span> <span class="hljs-attr">th:text</span>=<span class="hljs-string">"${{emp.birthday}}"</span>&gt;</span><span
+                            class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span> <span class="hljs-attr">th:text</span>=<span class="hljs-string">"${emp.department.name}"</span>&gt;</span><span
+                            class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span
+                            class="hljs-attr">href</span>=<span class="hljs-string">"#"</span>&gt;</span>编辑<span
+                            class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span
+                            class="hljs-attr">href</span>=<span class="hljs-string">"#"</span>&gt;</span>删除<span
+                            class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
+</code></pre>
+                </div>
+                <p><code>th:each</code> 用起来很方便, 就像 java 中的 for 循环一样.</p>
+                <div class="melody-code-wrap"><pre class="hljs java"><code class="java"><span
+                        class="hljs-keyword">for</span>(Employee emp: employees) {
+    <span class="hljs-comment">// Do something</span>
+}
+</code></pre>
+                </div>
+                <p>在 thymeleaf 中使用迭代太方便了! 回想 jstl 那些坑爹的标签, 泪都留下来...</p>
+                <h4>可以用 <code>th:each</code> 迭代的 java 类型</h4>
+                <p><code>th:each</code> 不仅仅可以对 java.util.List 类型迭代, 实际上大部分的 java 集合类型都可<br>
+                    以使用它来迭代.</p>
+                <ul>
+                    <li>实现了 java.util.Iterable 接口的对象</li>
+                    <li>实现了 java.util.Enumeration 接口的对象</li>
+                    <li>实现了 java.util.Iterator 接口的对象, 不会一次性读入内存, 返回一个读一个.</li>
+                    <li>实现了 java.util.Map 接口的对象, 这时候迭代的值是 java.util.Map.Entry.</li>
+                    <li>任何数组</li>
+                </ul>
+                <h3>5.2 保存迭代状态</h3>
+                <p><code>th:each</code> 还提供了一个变量可以保存迭代状态. 用法是 <code>th:each="emp, status: ${employees}"</code></p>
+                <p>状态变量保存了以下数据:</p>
+                <ul>
+                    <li>index 属性, 0 开始的索引值</li>
+                    <li>count 属性, 1 开始的索引值</li>
+                    <li>size 属性, 集合内元素的总量</li>
+                    <li>current 属性, 当前的迭代对象</li>
+                    <li>even/odd 属性, boolean 类型的, 用来判断是否是偶数个还是奇数个</li>
+                    <li>first 属性, boolean 类型, 是否是第一个</li>
+                    <li>last 属性, boolean 类型, 是否是最后一个</li>
+                </ul>
+                <p>看例子:</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-tag">&lt;<span
+                        class="hljs-name">ul</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span>编号<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span>姓名<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span>性别<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span>生日<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span>部门<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span>编辑<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span>删除<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list status"</span>&gt;</span>当前迭代状态<span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">th:each</span>=<span
+            class="hljs-string">"emp, status: ${employees}"</span> <span class="hljs-attr">th:class</span>=<span
+            class="hljs-string">"${status.odd} ? 'odd': 'even'"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span> <span class="hljs-attr">th:text</span>=<span class="hljs-string">"${emp.id}"</span>&gt;</span><span
+                            class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span> <span class="hljs-attr">th:text</span>=<span class="hljs-string">"${emp.name}"</span>&gt;</span><span
+                            class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span> <span class="hljs-attr">th:text</span>=<span class="hljs-string">"${emp.gender == 1} ? '男': '女'"</span>&gt;</span><span
+                            class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span> <span class="hljs-attr">th:text</span>=<span class="hljs-string">"${{emp.birthday}}"</span>&gt;</span><span
+                            class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span> <span class="hljs-attr">th:text</span>=<span class="hljs-string">"${emp.department.name}"</span>&gt;</span><span
+                            class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span
+                            class="hljs-attr">href</span>=<span class="hljs-string">"#"</span>&gt;</span>编辑<span
+                            class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list"</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span
+                            class="hljs-attr">href</span>=<span class="hljs-string">"#"</span>&gt;</span>删除<span
+                            class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><span class="hljs-tag">&lt;/<span
+                            class="hljs-name">span</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span
+                class="hljs-string">"list status"</span> <span class="hljs-attr">th:text</span>=<span
+                class="hljs-string">"|index: ${status.index}; count: ${status.count}; size: ${status.size}; first: ${status.first}|"</span>&gt;</span><span
+                            class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>
+</code></pre>
+                </div>
+                <p>也可以不显式声明 status 变量, thymeleaf 会自动创建一个, 状态变量的名称是你声明的<br>
+                    变量加上 Stat, 比如上面的例子 <code>emp: ${emplopyees}</code> 会创建一个 <code>empStat</code> 的状态变量</p>
+                <h3>6. 控制表达式</h3>
+                <h3>6.1 if 和 unless</h3>
+                <p><code>th:unless</code> 是 <code>th:if</code> 的相反条件, 所以只用 <code>th:if</code> 就可以了.</p>
+                <p><code>th:if</code> 如果返回 true, 其所在的 html 元素会被 thymeleaf 解析. 返回 false, 就当这<br>
+                    个 html 元素不存在了.</p>
+                <p>不只是布尔值的 true 和 false, <code>th:if</code> 表达式返回其他值时也会被认为是 true 或 false.</p>
+                <p>规则如下:</p>
+                <ul>
+                    <li>
+                        <p>值是非 null:</p>
+                        <ul>
+                            <li>boolean 类型并且值是 true, 返回 true</li>
+                            <li>数值类型并且值不是 0, 返回 true</li>
+                            <li>字符类型(Char)并且值不是 0, 返回 true</li>
+                            <li>String 类型并且值不是 "false", "off", "no", 返回 true</li>
+                            <li>不是 boolean, 数值, 字符, String 的其他类型, 返回 true</li>
+                        </ul>
+                    </li>
+                    <li><p>值是 null, 返回 false</p></li>
+                </ul>
+                <p>看例子:</p>
+                <div class="melody-code-wrap"><pre class="hljs bash"><code class="bash">&lt;div th:<span
+                        class="hljs-keyword">if</span>=<span class="hljs-string">"<span class="hljs-variable">${employees}</span>"</span>&gt;
+    todo 显示 employees 列表
+&lt;/div&gt;
+&lt;div th:<span class="hljs-keyword">if</span>=<span class="hljs-string">"not <span
+                            class="hljs-variable">${employees}</span>"</span>&gt;
+    这里不会显示
+&lt;/div&gt;
+</code></pre>
+                </div>
+                <h3>6.2 switch 语句</h3>
+                <p>使用 <code>th:switch</code> 然后在子元素中 <code>th:case</code> 进行选择. 默认是 <code>th:case="*"</code>.</p>
+                <div class="melody-code-wrap"><pre class="hljs xml"><code class="xml"><span class="hljs-tag">&lt;<span
+                        class="hljs-name">div</span> <span class="hljs-attr">th:switch</span>=<span class="hljs-string">"${employees.size()}"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:case</span>=<span
+            class="hljs-string">"1"</span>&gt;</span>1 个<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:case</span>=<span
+            class="hljs-string">"2"</span>&gt;</span>2 个<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:case</span>=<span
+            class="hljs-string">"3"</span>&gt;</span>3 个<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">th:case</span>=<span
+            class="hljs-string">"*"</span>&gt;</span>很多个<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre>
+                </div>
+                <hr>
+                <p>到此为止, 使用 thymeleaf 的大部分场景都涉及到了. 还有 fragment 部分看 demo 项目吧.</p>
+                <p>more todo ...</p>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
