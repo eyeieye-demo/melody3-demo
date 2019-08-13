@@ -2,6 +2,7 @@ package com.eyeieye.melody.demo.controller.nosession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.eyeieye.melos.rpc.hessian.HessianZipSerializer;
 import com.eyeieye.melos.web.nosession.SessionStore;
 
 import redis.clients.jedis.Jedis;
