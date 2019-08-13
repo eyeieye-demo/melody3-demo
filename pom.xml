@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.eyeieye.melody</groupId>
 	<artifactId>melody2-demo</artifactId>
@@ -10,7 +9,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.9.RELEASE</version>
+		<version>2.0.2.RELEASE</version>
 		<relativePath />
 	</parent>
 
@@ -18,7 +17,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.7</java.version>
-		<thymeleaf.version>3.0.0.RELEASE</thymeleaf.version>
+		<thymeleaf.version>3.0.9.RELEASE</thymeleaf.version>
 		<docker.image.prefix>springboot</docker.image.prefix>
 	</properties>
 
@@ -46,12 +45,12 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-                <groupId>melos</groupId>
-                <artifactId>melos</artifactId>
-                <version>4.0.0</version>
-                <scope>system</scope>
-			    <systemPath>${project.basedir}/src/lib/melos.jar</systemPath>
-            </dependency>
+			<groupId>melos</groupId>
+			<artifactId>melos</artifactId>
+			<version>4.0.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/lib/melos.jar</systemPath>
+		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -69,11 +68,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
-		</dependency>
-		<!-- 引入一下两个依赖 实现热部署 -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>springloaded</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>
@@ -118,6 +112,11 @@
 			<version>4.0.38</version>
 		</dependency>
 		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>2.7.2</version>
+		</dependency>
+		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
 			<version>1.56</version>
@@ -145,12 +144,12 @@
 				<directory>src/main/resources</directory>
 			</resource>
 			<resource>
-                 <directory>src/lib</directory>
-                 <targetPath>BOOT-INF/lib/</targetPath>
-                 <includes>
-                     <include>**/*.jar</include>
-                 </includes>
-             </resource>
+				<directory>src/lib</directory>
+				<targetPath>BOOT-INF/lib/</targetPath>
+				<includes>
+					<include>**/*.jar</include>
+				</includes>
+			</resource>
 		</resources>
 		<plugins>
 			<plugin>
