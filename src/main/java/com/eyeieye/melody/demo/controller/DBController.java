@@ -3,18 +3,23 @@ package com.eyeieye.melody.demo.controller;
 
 import com.eyeieye.melos.util.StringUtil;
 import com.eyeieye.melos.web.url.URLBroker;
-import com.mongodb.DBObject;
+import com.mongodb.*;
 
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoIterable;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.util.DBObjectUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Controller
 @RequestMapping("db")
@@ -61,7 +66,13 @@ public class DBController {
 
     @RequestMapping(value="mongo",method = RequestMethod.GET)
     public void mongoTestPage(ModelMap modelMap){
-        List<DBObject> list = mongoTemplate.getCollection("books").find().toArray();
+        List<DBObject> list = new ArrayList<>();
+        FindIterable<Document> iterable =  mongoTemplate.getCollection("books").find();
+
+        List<DBObject> result = StreamSupport.stream(iterable.spliterator(), false)
+                .map(BasicDBObject::new)
+                .collect(Collectors.toList());
+
         modelMap.put("books",list);
     }
 
