@@ -43,7 +43,7 @@
 		</property>
 	</bean>
 
-    <bean class="com.eyeieye.melody.web.nosession.SessionCookieStoreConfig">
+    <bean class="com.eyeieye.melos.web.nosession.SessionCookieStoreConfig">
 		<property name="cookieName" value="us" />
 		<property name="attributeNames">
 			<set>
