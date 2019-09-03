@@ -9,7 +9,7 @@
 	<bean id="uploadServer" class="com.eyeieye.melos.web.url.URLBroker">
 		<property name="encoding" value="${melos.web.encoding}"></property>
 		<property name="config">
-			<bean class="com.eyeieye.melody.web.url.URLConfig">
+			<bean class="com.eyeieye.melos.web.url.URLConfig">
 				<property name="host" value="${uploadServer.host}"/>
 				<property name="port" value="${server.port}"/>
 				<property name="path" value="${server.context-path}"/>
@@ -21,7 +21,7 @@
 	<bean id="appServer" class="com.eyeieye.melos.web.url.URLBroker">
 		<property name="encoding" value="${melos.web.encoding}"></property>
 		<property name="config">
-			<bean class="com.eyeieye.melody.web.url.URLConfig">
+			<bean class="com.eyeieye.melos.web.url.URLConfig">
 				<property name="host" value="${server.domain}"/>
 				<property name="port" value="${server.port}"/>
 				<property name="path" value="${server.context-path}"/>
@@ -34,7 +34,7 @@
 	<bean id="testServer" class="com.eyeieye.melos.web.url.URLBroker">
 		<property name="encoding" value="${melos.web.encoding}"></property>
 		<property name="config">
-			<bean class="com.eyeieye.melody.web.url.URLConfig">
+			<bean class="com.eyeieye.melos.web.url.URLConfig">
 				<property name="host" value="${testServer.host}"/>
 				<property name="port" value="${testServer.port}"/>
 				<property name="path" value="/"/>
@@ -56,4 +56,8 @@
 	<bean class="com.eyeieye.melos.util.crypto.impl.BcprovRsaCryptoImpl" name="rsaCrypto">
         <property name="rsaKeyFile" value="classpath:rsa.key"></property>
     </bean>
+    
+    <bean class="com.eyeieye.melos.util.crypto.impl.BlowfishCryptoImpl" name="blowfishCrypto"/>
+    
+    <bean class="com.eyeieye.melos.util.crypto.impl.AESCryptoImpl" name="aesCrypto"/>
 </beans>
