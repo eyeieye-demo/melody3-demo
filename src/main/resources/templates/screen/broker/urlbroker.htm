@@ -14,36 +14,36 @@
 		staticServer(MutiHostBroker):
 			<!--<span th:text="${#url.get('staticServer','/test.htm').put('aaa','bbb')} " />-->
 			<!--<span th:text="${#url.get('staticServer','/test.htm').put('aaa','bbb')} " />-->
-		broker的中文传值测试(多层嵌套测试)
-			<span es:contain="${#url.get('appServer','broker/params.htm').put('name','张三')} " />
-			<span es:contain="${#url.get('appServer','broker/params.htm').put('name','李四')} " />
-			<span es:contain="${#url.get('appServer','broker/params.htm').put('name','王五')} " />
+		broker鐨勪腑鏂囦紶鍊兼祴璇�(澶氬眰宓屽娴嬭瘯)
+			<span es:contain="${#url.get('appServer','broker/params.htm').put('name','寮犱笁')} " />
+			<span es:contain="${#url.get('appServer','broker/params.htm').put('name','鏉庡洓')} " />
+			<span es:contain="${#url.get('appServer','broker/params.htm').put('name','鐜嬩簲')} " />
 
-			<div name="widget2" es:contain="${#url.get('appServer','/broker/contain.htm').put('name','张三')}" />
+			<div name="widget2" es:contain="${#url.get('appServer','/broker/contain.htm').put('name','寮犱笁')}" />
 
 		</pre>
 
 
 	<p>
-	<h3>以上是测试,要新建一个urlbroker,需要在配置文件中新增小节:</h3>
+	<h3>浠ヤ笂鏄祴璇�,瑕佹柊寤轰竴涓猽rlbroker,闇�瑕佸湪閰嶇疆鏂囦欢涓柊澧炲皬鑺�:</h3>
 		<pre>
 			server:
-			  #端口，必须
+			  #绔彛锛屽繀椤�
 				port: 8080
-			  #执行路径，必须
+			  #鎵ц璺緞锛屽繀椤�
 				context-path: /
-			  #网络协议
+			  #缃戠粶鍗忚
 				#  protocol: http
-			  #执行的域名，必须
+			  #鎵ц鐨勫煙鍚嶏紝蹇呴』
 				domain: www.cktest.com
 				#  followContextPath: true
 		</pre>
 	</p>
 		<p>
-			<h3>然后在xml里进行配置</h3>
+			<h3>鐒跺悗鍦▁ml閲岃繘琛岄厤缃�</h3>
 
 			<bean id="appServer" class="com.eyeieye.melos.web.url.URLBroker">
-				<property name="encoding" value="${melody.web.encoding}"></property>
+				<property name="encoding" value="${melos.web.encoding}"></property>
 				<property name="config">
 					<bean class="com.eyeieye.melody.web.url.URLConfig">
 						<property name="host" value="${staticServer.host}"/>
@@ -55,7 +55,7 @@
 			</bean>
 		</p>
 	<p>
-		<h3>或者你可以使用springboot的@Bean注入</h3>
+		<h3>鎴栬�呬綘鍙互浣跨敤springboot鐨凘Bean娉ㄥ叆</h3>
 
 	@Bean("imageServer")
 	public URLBroker imageServer(@Autowired URLBroker appServer){
@@ -74,7 +74,7 @@
 	}
 	</p>
 	<p>
-		<h3>在使用时,只需要将相应的路径使用#url取出来即可 </h3>
+		<h3>鍦ㄤ娇鐢ㄦ椂,鍙渶瑕佸皢鐩稿簲鐨勮矾寰勪娇鐢�#url鍙栧嚭鏉ュ嵆鍙� </h3>
 		< div name="widget" es:contain="${#url.get('appServer','/broker/urlbroker.htm').put('aaa','bbb')}" />
 	</p>
 

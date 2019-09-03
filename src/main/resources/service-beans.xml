@@ -59,5 +59,4 @@
     
     <bean class="com.eyeieye.melos.util.crypto.impl.BlowfishCryptoImpl" name="blowfishCrypto"/>
     
-    <bean class="com.eyeieye.melos.util.crypto.impl.AESCryptoImpl" name="aesCrypto"/>
 </beans>

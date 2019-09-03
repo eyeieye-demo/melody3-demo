@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/download")
 public class DownloadAction {
 
-	private @Value("${melody.web.encoding}")
+	private @Value("${melos.web.encoding}")
 	String encoding;
 
 	private String exportContentType = "application/vnd.ms-excel";
