@@ -46,3 +46,11 @@ target/test-classes/local-contry-only.properties
 target/test-classes/local-lang-contory.properties
 target/test-classes/local-lang-only.properties
 target/test-classes/web-encoding.properties
+*.class
+.classpath
+*.class
+.classpath
+target/classes/com/eyeieye/melody/demo/controller/AnnotationController$WestJsonSerializer.class
+*.class
+*.class
+*.class
