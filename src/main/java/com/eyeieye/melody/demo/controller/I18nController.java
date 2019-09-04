@@ -1,10 +1,9 @@
 package com.eyeieye.melody.demo.controller;
 
-import com.eyeieye.melody.demo.conf.LangRepertory;
 import com.eyeieye.melody.demo.domain.DemoMoney;
+import com.eyeieye.melody.demo.locale.LangRepertory;
 import com.eyeieye.melody.demo.service.I18nService;
 
-import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,7 @@ public class I18nController {
 
     @RequestMapping("hasen.htm")
     private void hasen(ModelMap modelMap){
-        modelMap.put("localtest", LangRepertory.langtest.getMessage());
+        modelMap.put("localtest", LangRepertory.lang_test.getMessage());
     }
     @RequestMapping("noen.htm")
     private void noen(){
