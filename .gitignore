@@ -1,5 +1,10 @@
 /target
 /settings
+
 *.prefs
 *.class
 *.iml
+
+.idea
+.classpath
+.project
