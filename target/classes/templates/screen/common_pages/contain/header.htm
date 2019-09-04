@@ -1,9 +1,0 @@
-<!-- 公用的header页面 -->
-
-<div class="melody-head">
-        <a href="$appServer.get('index.htm')" class="logo">WIKI中化信息</a>
-        <span>Melody2-demo</span>
-        <a href="$appServer.get('/login/logout.htm')" th:if="${logined}" class="login">登出</a>
-        <a href="$appServer.get('/login/login.htm')" th:if="${not logined}" class="login">登录</a>
-        <a href="$appServer.get('/login/register.htm')" th:if="${not logined}" class="register">注册</a>
-</div>
