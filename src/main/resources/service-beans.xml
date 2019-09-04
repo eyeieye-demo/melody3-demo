@@ -12,7 +12,7 @@
 			<bean class="com.eyeieye.melos.web.url.URLConfig">
 				<property name="host" value="${uploadServer.host}"/>
 				<property name="port" value="${server.port}"/>
-				<property name="path" value="${server.context-path}"/>
+				<property name="path" value="${server.servlet.context-path}"/>
 				<property name="followContextPath" value="${server.followContextPath:false}"/>
 			</bean>
 		</property>
@@ -24,7 +24,7 @@
 			<bean class="com.eyeieye.melos.web.url.URLConfig">
 				<property name="host" value="${server.domain}"/>
 				<property name="port" value="${server.port}"/>
-				<property name="path" value="${server.context-path}"/>
+				<property name="path" value="${server.servlet.context-path}"/>
 				<property name="followContextPath" value="${server.followContextPath:false}"/>
 			</bean>
 		</property>

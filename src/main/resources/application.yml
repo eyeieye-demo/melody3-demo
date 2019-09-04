@@ -6,7 +6,8 @@ server:
   #端口，必须
   port: 8080  
   #执行路径，必须
-  context-path: /
+  servlet:
+    context-path: /
   #网络协议
 #  protocol: http
   #执行的域名，必须
@@ -80,7 +81,7 @@ spring:
   datasource:
     password: abc123
     username: root
-    url: jdbc:mysql://localhost:3306/mysql
+    url: jdbc:mysql://localhost:3306/mysql?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
