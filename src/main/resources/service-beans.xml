@@ -6,23 +6,33 @@
         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<!-- URLBrokers -->
-	<bean id="uploadServer" class="com.eyeieye.melos.web.url.URLBroker">
+	<bean id="appServer" class="com.eyeieye.melos.web.url.URLBroker">
 		<property name="encoding" value="${melos.web.encoding}"></property>
 		<property name="config">
 			<bean class="com.eyeieye.melos.web.url.URLConfig">
-				<property name="host" value="${uploadServer.host}"/>
+				<property name="host" value="${server.domain}"/>
 				<property name="port" value="${server.port}"/>
 				<property name="path" value="${server.servlet.context-path}"/>
 				<property name="followContextPath" value="${server.followContextPath:false}"/>
 			</bean>
 		</property>
 	</bean>
-	<!-- URLBrokers -->
-	<bean id="appServer" class="com.eyeieye.melos.web.url.URLBroker">
+	<bean id="staticServer" class="com.eyeieye.melos.web.url.MultiHostURLBroker">
+		<property name="encoding" value="${melos.web.encoding}"></property>
+		<property name="config">
+			<bean class="com.eyeieye.melos.web.url.MultiHostURLConfig">
+				<property name="hosts" value="${staticServer.host}"/>
+				<property name="port" value="${server.port}"/>
+				<property name="path" value="${server.servlet.context-path}"/>
+				<property name="followContextPath" value="${server.followContextPath:false}"/>
+			</bean>
+		</property>
+	</bean>
+	<bean id="uploadServer" class="com.eyeieye.melos.web.url.URLBroker">
 		<property name="encoding" value="${melos.web.encoding}"></property>
 		<property name="config">
 			<bean class="com.eyeieye.melos.web.url.URLConfig">
-				<property name="host" value="${server.domain}"/>
+				<property name="host" value="${uploadServer.host}"/>
 				<property name="port" value="${server.port}"/>
 				<property name="path" value="${server.servlet.context-path}"/>
 				<property name="followContextPath" value="${server.followContextPath:false}"/>
